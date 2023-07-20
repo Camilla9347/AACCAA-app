@@ -6,6 +6,7 @@ const {StatusCodes} = require('http-status-codes')
 const CustomError = require('../errors')
 // require 'jsonwebtoken' package -> now in utils
 const { attachCookiesToResponse } = require('../utils')
+const { compare } = require('bcryptjs')
 
 
 // Register Controller
@@ -17,7 +18,7 @@ const register = async (req, res) => {
     if(emailAlreadyExists){
         throw new CustomError.BadRequestError('Email already exists')
     }
-    
+
     const user = await User.create({...req.body});
     
     // to protect password, used as payload
@@ -34,11 +35,42 @@ const register = async (req, res) => {
 }
 
 const login = async (req, res) => {
-    res.send('login user')
+    // check if email and password exist, if one missing return 400
+    const {email,password}= req.body
+    if (!email || !password){
+        throw new CustomError.BadRequestError('Please provide email and password')
+    }
+    // find user, if no user return 401
+    const user = await User.findOne({email});
+    if(!user){
+        throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    }
+    //check password, if does not match return 401
+    const isPasswordCorrect = await user.comparePassword(password)
+    if (!isPasswordCorrect){
+        throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    }
+    // if everything is correct, attach cookie
+    // and send back the same response as in register
+
+    const tokenUser = {name:user.name, userID:user._id};
+    attachCookiesToResponse({ res, user: tokenUser });
+    // 3 send response with tokenUser and token
+    res.status(StatusCodes.CREATED).json({user: tokenUser})
+    
+    //res.send('login user')
 }
 
 const logout = async (req, res) => {
-    res.send('logout user')
+    
+    //remove cookie from browser
+    res.cookie('token', 'logout', {
+        httpOnly:true,
+        expires: new Date(Date.now()),
+    })
+    
+    res.status(StatusCodes.OK).json({msg:'user logged out!'})
+    //res.send('logout user')
 }
 
 //export (register,login,logout) functions
