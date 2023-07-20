@@ -24,6 +24,7 @@ const connectDB = require('./db/connect')
 // routers
 // import authRoutes as authRouter in the app.js
 const authRouter = require('./routes/authRoutes')
+const sentenceRouter = require('./routes/sentenceRoutes')
 
 // middleware
 // setup 404 and errorHandler middleware
@@ -56,6 +57,9 @@ app.get('/api/v1', (req,res) => {
 
 // middleware for authentication routes
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/sentences', sentenceRouter)
+
+
 // 3 no routes found: end up here
 app.use(NotFoundMiddleware);
 // last one, by express rules

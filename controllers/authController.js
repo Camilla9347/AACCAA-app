@@ -63,7 +63,10 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     
-    //remove cookie from browser
+    // remember cookies have a size limit, are not stored anywhere
+    // httpOnly, nobody can access them
+    // cookies can be sent back and forth from the same domain!
+    // remove cookie from browser
     res.cookie('token', 'logout', {
         httpOnly:true,
         expires: new Date(Date.now()),
