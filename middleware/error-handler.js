@@ -7,13 +7,14 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     msg: err.message || 'Something went wrong try again later',
   };
 
-  // Handle Postman errors
+  // Handle errors thrown by MondoDB through Postman with Custom messages (and status codes)
   if (err.name === 'ValidationError') {
     customError.msg = Object.values(err.errors)
       .map((item) => item.message)
       .join(',');
     customError.statusCode = 400;
   }
+  // handle email duplicate error
   if (err.code && err.code === 11000) {
     customError.msg = `Duplicate value entered for ${Object.keys(
       err.keyValue

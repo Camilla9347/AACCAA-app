@@ -19,6 +19,11 @@ const morgan = require('morgan')
 // import connect() and invoke the starter
 const connectDB = require('./db/connect')
 
+
+// routers
+// import authRoutes as authRouter in the app.js
+const authRouter = require('./routes/authRoutes')
+
 // middleware
 // setup 404 and errorHandler middleware
 const NotFoundMiddleware = require('./middleware/not-found')
@@ -37,6 +42,9 @@ app.use(express.json());
 app.get('/', (req,res) => {
     res.send('AAC API')
 })
+
+// middleware for authentication routes
+app.use('/api/v1/auth', authRouter)
 
 // 3 no routes found: end up here
 app.use(NotFoundMiddleware);
