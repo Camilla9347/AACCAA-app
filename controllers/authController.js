@@ -5,7 +5,8 @@ const {StatusCodes} = require('http-status-codes')
 // exporting from index.js
 const CustomError = require('../errors')
 // require 'jsonwebtoken' package -> now in utils
-const {createJWT} = require('../utils')
+const { attachCookiesToResponse } = require('../utils')
+
 
 // Register Controller
 // create user
@@ -20,10 +21,12 @@ const register = async (req, res) => {
     
     // to protect password, used as payload
     const tokenUser = {name:user.name, userID:user._id};
-    const token = createJWT({payload:tokenUser})    
+    
+    attachCookiesToResponse({ res, user: tokenUser });
+   
     
     // 3 send response with tokenUser and token
-    res.status(StatusCodes.CREATED).json({user: tokenUser, token})
+    res.status(StatusCodes.CREATED).json({user: tokenUser})
     //2 send response with entire user (only while testing)
     //res.status(StatusCodes.CREATED).json({user})
     // 1 res.send('some string value')

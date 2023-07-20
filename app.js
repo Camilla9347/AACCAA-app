@@ -14,6 +14,7 @@ const app = express();
 
 // rest of the packages
 const morgan = require('morgan')
+const cookieParser = require('cookie-parser')
 
 // database
 // import connect() and invoke the starter
@@ -35,7 +36,9 @@ app.use(morgan('tiny'));
 // access json data in req.body
 // 1
 app.use(express.json());
-
+// once first request made and cookie got back
+// then with each request, the browser will send that cookie (automatically to the server)
+app.use(cookieParser());
 
 // home page route
 // 2 check for all routes
@@ -43,9 +46,14 @@ app.get('/', (req,res) => {
     res.send('AAC API')
 })
 
+app.get('/api/v1', (req,res) => {
+    console.log(req.cookies)
+    res.send('AAC API')
+})
+
+
 // middleware for authentication routes
 app.use('/api/v1/auth', authRouter)
-
 // 3 no routes found: end up here
 app.use(NotFoundMiddleware);
 // last one, by express rules
