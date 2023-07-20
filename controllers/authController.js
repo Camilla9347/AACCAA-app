@@ -17,6 +17,7 @@ const register = async (req, res) => {
     if(emailAlreadyExists){
         throw new CustomError.BadRequestError('Email already exists')
     }
+    
     const user = await User.create({...req.body});
     
     // to protect password, used as payload
@@ -24,7 +25,6 @@ const register = async (req, res) => {
     
     attachCookiesToResponse({ res, user: tokenUser });
    
-    
     // 3 send response with tokenUser and token
     res.status(StatusCodes.CREATED).json({user: tokenUser})
     //2 send response with entire user (only while testing)

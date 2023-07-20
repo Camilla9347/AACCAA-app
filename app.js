@@ -38,7 +38,7 @@ app.use(morgan('tiny'));
 app.use(express.json());
 // once first request made and cookie got back
 // then with each request, the browser will send that cookie (automatically to the server)
-app.use(cookieParser());
+app.use(cookieParser(process.env.JWT_SECRET)); // sign cookies so client cannot tamper with them
 
 // home page route
 // 2 check for all routes
@@ -47,7 +47,9 @@ app.get('/', (req,res) => {
 })
 
 app.get('/api/v1', (req,res) => {
-    console.log(req.cookies)
+    //console.log(req.cookies)
+    // once cookie is signed, it is available from signedCookies
+    console.log(req.signedCookies)
     res.send('AAC API')
 })
 
