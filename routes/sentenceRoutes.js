@@ -14,5 +14,4 @@ const {
 router.route('/').get(getAllSentences).post(createSentence)
 router.route('/:id').get(getSingleSentence).patch(updateSentence).delete(deleteSentence)
 
-
 module.exports = router;
