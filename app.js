@@ -20,6 +20,9 @@ const cookieParser = require('cookie-parser')
 // import connect() and invoke the starter
 const connectDB = require('./db/connect')
 
+//auth middleware
+const {authenticateUser} = require('./middleware/authentication')
+
 
 // routers
 // import authRoutes as authRouter in the app.js
@@ -57,7 +60,8 @@ app.get('/api/v1', (req,res) => {
 
 // middleware for authentication routes
 app.use('/api/v1/auth', authRouter)
-app.use('/api/v1/sentences', sentenceRouter)
+// all  sentence routes require user to be authenticated
+app.use('/api/v1/sentences',authenticateUser,sentenceRouter)
 
 
 // 3 no routes found: end up here

@@ -1,5 +1,11 @@
+const Sentence = require('../models/Sentence');
+const {StatusCodes} = require('http-status-codes');
+const CustomError = require('../errors');
+
 const getAllSentences = async (req,res) => {
+    console.log(req.user)
     res.send('get all sentences')
+
 }
 
 const getSingleSentence = async (req,res) => {
