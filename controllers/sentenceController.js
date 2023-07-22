@@ -1,6 +1,7 @@
 const Sentence = require('../models/Sentence');
 const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
+const {getFirstPictogram} = require('../adapters/pictogramAdapter')
 
 const getAllSentences = async (req,res) => {
     console.log(req.user)
@@ -14,10 +15,22 @@ const getSingleSentence = async (req,res) => {
    
 }
 
-// not sure about post CreateSentence, it may be a searchSentence so get with queryString
 const createSentence = async (req,res) => {
-    res.send('create sentence')
-     //req.query
+    
+    const {subject, verb, object} = req.body
+    if (!subject || !verb || !object){
+        throw new CustomError.BadRequestError('Please provide subject, verb and object')
+    }
+    
+    subjectPictogram = await getFirstPictogram(subject)
+    verbPictogram = await getFirstPictogram(verb)
+    objectPictogram = await getFirstPictogram(object)
+    
+    sentenceArray = new Array(subjectPictogram,verbPictogram,objectPictogram)
+
+    
+    res.status(StatusCodes.CREATED).json(sentenceArray)
+
 }
 
 

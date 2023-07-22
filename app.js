@@ -28,7 +28,7 @@ const {authenticateUser} = require('./middleware/authentication')
 // import authRoutes as authRouter in the app.js
 const authRouter = require('./routes/authRoutes')
 const sentenceRouter = require('./routes/sentenceRoutes')
-const pictogramRouter = require('./routes/pictogramRoutes')
+
 
 // middleware
 // setup 404 and errorHandler middleware
@@ -63,7 +63,7 @@ app.get('/api/v1', (req,res) => {
 app.use('/api/v1/auth', authRouter)
 // all  sentence routes require user to be authenticated
 app.use('/api/v1/sentences',authenticateUser,sentenceRouter)
-app.use('/api/v1/pictograms',authenticateUser,pictogramRouter)
+
 
 
 // 3 no routes found: end up here
