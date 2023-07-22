@@ -5,9 +5,15 @@ const getFirstPictogram = async (language,string) => {
     
     const sentencePart = Object.keys(string)[0]
     const sentenceWord = string[sentencePart]
- 
+
+    const availableLanguages = [ 'en', 'es', 'fr', 'it']
     
+    if (!availableLanguages.includes(language)) {
+        throw new CustomError.NotFoundError(`No language associated with string ${language}`)
+    }
+ 
     const searchUrl = `https://api.arasaac.org/v1/pictograms/${language}/bestsearch/${sentenceWord}`
+    
     const searchResp = await fetch(searchUrl)
     const data = await searchResp.json()
     

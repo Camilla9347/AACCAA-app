@@ -4,8 +4,8 @@ const CustomError = require('../errors');
 const {getFirstPictogram} = require('../adapters/pictogramAdapter')
 
 const getAllSentences = async (req,res) => {
-    console.log(req.user)
-    res.send('get all sentences')
+    const sentences = await Sentence.find({createdBy:req.user.userId}).sort('createdAt')
+    res.status(StatusCodes.OK).json({sentences, count: sentences.length})
     
 
 }
@@ -28,9 +28,13 @@ const createSentence = async (req,res) => {
     objectPictogram = await getFirstPictogram(language,{object})
     
     sentenceArray = new Array(subjectPictogram,verbPictogram,objectPictogram)
-
     
-    res.status(StatusCodes.CREATED).json(sentenceArray)
+    req.body.createdBy = req.user.userId
+    req.body.sentence = sentenceArray
+    
+    const sentence = await Sentence.create(req.body);
+    
+    res.status(StatusCodes.CREATED).json(sentence)
 
 }
 
