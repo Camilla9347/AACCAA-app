@@ -17,14 +17,15 @@ const getSingleSentence = async (req,res) => {
 
 const createSentence = async (req,res) => {
     
-    const {subject, verb, object} = req.body
-    if (!subject || !verb || !object){
-        throw new CustomError.BadRequestError('Please provide subject, verb and object')
+    const {language, subject, verb, object} = req.body
+    if (!language || !subject || !verb || !object){
+        throw new CustomError.BadRequestError('Please provide language, subject, verb and object')
     }
     
-    subjectPictogram = await getFirstPictogram(subject)
-    verbPictogram = await getFirstPictogram(verb)
-    objectPictogram = await getFirstPictogram(object)
+    
+    subjectPictogram = await getFirstPictogram(language,{subject})
+    verbPictogram = await getFirstPictogram(language,{verb})
+    objectPictogram = await getFirstPictogram(language,{object})
     
     sentenceArray = new Array(subjectPictogram,verbPictogram,objectPictogram)
 
