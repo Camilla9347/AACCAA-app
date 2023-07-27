@@ -70,6 +70,23 @@ const updateSentence = async (req,res) => {
         throw new CustomError.NotFoundError(`No sentence with id: ${sentenceId}`)
     }
     
+    const updatedSentence = await compareAndUpdateSentence(sentence, subject,verb,object)
+    
+
+    const updatedDbSentence = await Sentence.findByIdAndUpdate(
+        {
+            _id:sentenceId,
+            createdBy: userId
+        },
+        updatedSentence,
+        {new:true, runValidators:true}
+    
+    ) 
+    res.status(StatusCodes.OK).json(updatedDbSentence)
+}
+
+// to be moved in utils
+const compareAndUpdateSentence = async (sentence, subject, verb, object) => {
     if(sentence["sentence"][0].subject !== subject){
         const newSubject = await getFirstPictogram(sentence["language"], {subject})
         sentence["sentence"][0] = newSubject
@@ -84,21 +101,23 @@ const updateSentence = async (req,res) => {
         const newObject = await getFirstPictogram(sentence["language"], {object})
         sentence["sentence"][2] = newObject
     }
-
-    const updatedSentence = await Sentence.findByIdAndUpdate(
-        {
-            _id:sentenceId,
-            createdBy: userId
-        },
-        sentence,
-        {new:true, runValidators:true}
-    
-    ) 
-    res.status(StatusCodes.OK).json({updatedSentence})
+    return sentence
 }
 
+
 const deleteSentence = async (req,res) => {
-    res.send('delete sentence')
+    const {
+        user: {userId}, 
+        params: {id: sentenceId}
+    } = req
+    const sentence = await Sentence.findByIdAndRemove({
+        _id:sentenceId,
+        createdBy:userId
+    })
+    if(!sentence){
+        throw new CustomError.NotFoundError(`No sentence with id: ${sentenceId}`)
+    }
+    res.status(StatusCodes.OK).send()
 }
 
 module.exports = {
