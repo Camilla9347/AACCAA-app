@@ -49,6 +49,7 @@ const createSentence = async (req,res) => {
 
 
 const updateSentence = async (req,res) => {
+    
     const {
         body:{subject,verb,object},
         user: {userId}, 
@@ -70,26 +71,30 @@ const updateSentence = async (req,res) => {
     }
     
     if(sentence["sentence"][0].subject !== subject){
-        console.log("different subject")
-        newSubject = await getFirstPictogram(sentence["language"], {subject})
-        console.log(newSubject)
+        const newSubject = await getFirstPictogram(sentence["language"], {subject})
+        sentence["sentence"][0] = newSubject
     }
     
     if(sentence["sentence"][1].verb !== verb){
-        console.log("different verb")
-        newVerb = await getFirstPictogram(sentence["language"], {verb})
-        console.log(newVerb)
+        const newVerb = await getFirstPictogram(sentence["language"], {verb})
+        sentence["sentence"][1] = newVerb
     }
     
     if(sentence["sentence"][2].object !== object){
-        console.log("different object")
-        newObject = await getFirstPictogram(sentence["language"], {object})
-        console.log(newObject)
+        const newObject = await getFirstPictogram(sentence["language"], {object})
+        sentence["sentence"][2] = newObject
     }
 
+    const updatedSentence = await Sentence.findByIdAndUpdate(
+        {
+            _id:sentenceId,
+            createdBy: userId
+        },
+        sentence,
+        {new:true, runValidators:true}
     
-    res.status(StatusCodes.OK).json({sentence})
-    //res.send('update sentence')
+    ) 
+    res.status(StatusCodes.OK).json({updatedSentence})
 }
 
 const deleteSentence = async (req,res) => {
