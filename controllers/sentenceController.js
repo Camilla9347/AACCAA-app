@@ -11,8 +11,16 @@ const getAllSentences = async (req,res) => {
 }
 
 const getSingleSentence = async (req,res) => {
-    res.send('get single sentence')
-   
+    const {user: {userId}, params: {id: sentenceId}} = req
+        //res.send('get single sentence')
+    const sentence = await Sentence.findOne({
+        _id:sentenceId,
+        createdBy: userId
+    });
+    if(!sentence){
+        throw new CustomError.NotFoundError(`No sentence with id ${sentenceId}`)
+    }
+    res.status(StatusCodes.OK).json({sentence})
 }
 
 const createSentence = async (req,res) => {
@@ -31,16 +39,57 @@ const createSentence = async (req,res) => {
     
     req.body.createdBy = req.user.userId
     req.body.sentence = sentenceArray
+    req.body.language = language
     
     const sentence = await Sentence.create(req.body);
     
-    res.status(StatusCodes.CREATED).json(sentence)
+    res.status(StatusCodes.CREATED).json({sentence})
 
 }
 
 
 const updateSentence = async (req,res) => {
-    res.send('update sentence')
+    const {
+        body:{subject,verb,object},
+        user: {userId}, 
+        params: {id: sentenceId}
+    } = req
+    
+
+    if (subject==='' || verb==='' || object===''){
+        throw new CustomError.BadRequestError('subject, verb, or object fields cannot be empty')
+
+    }
+    const sentence = await Sentence.findOne({
+        _id:sentenceId,
+        createdBy: userId
+    });
+
+    if(!sentence){
+        throw new CustomError.NotFoundError(`No sentence with id: ${sentenceId}`)
+    }
+    
+    if(sentence["sentence"][0].subject !== subject){
+        console.log("different subject")
+        newSubject = await getFirstPictogram(sentence["language"], {subject})
+        console.log(newSubject)
+    }
+    
+    if(sentence["sentence"][1].verb !== verb){
+        console.log("different verb")
+        newVerb = await getFirstPictogram(sentence["language"], {verb})
+        console.log(newVerb)
+    }
+    
+    if(sentence["sentence"][2].object !== object){
+        console.log("different object")
+        newObject = await getFirstPictogram(sentence["language"], {object})
+        console.log(newObject)
+    }
+
+    
+    res.status(StatusCodes.OK).json({sentence})
+    //res.send('update sentence')
 }
 
 const deleteSentence = async (req,res) => {

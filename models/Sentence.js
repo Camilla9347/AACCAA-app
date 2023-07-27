@@ -1,16 +1,18 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
-// Hash passwords
-const bcrypt = require('bcryptjs')
 
 const SentenceSchema = new mongoose.Schema({
-    sentence: Array,
-    /*
-    [
-            { id: Number, subject: String, imageUrl: String},
-            { id: Number, verb: String, imageUrl: String}, 
-            { id: Number, object: String, imageUrl: String} 
-    ],*/
+    
+    sentence: {
+        type:Array
+    },
+    language: {
+        type: String,
+        enum: {
+          values: ['en', 'it'],
+          message: '{VALUE} is not supported',
+        },
+    },
+    
     createdBy:{
         type:mongoose.Types.ObjectId,
         ref: 'User',

@@ -53,7 +53,7 @@ const createPictogramObject = async (firstPictogram, sentencePart) => {
     const prop = sentencePart
     pictogramObject[prop] = pictogramMeaning
     pictogramObject.imageUrl = pictogramImageUrl
-    console.log(pictogramObject)
+    //console.log(pictogramObject)
 
     return pictogramObject
 }
