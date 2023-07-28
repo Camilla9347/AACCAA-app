@@ -30,11 +30,18 @@ const createSentence = async (req,res) => {
         throw new CustomError.BadRequestError('Please provide language, subject, verb and object')
     }
     
+   
     
     subjectPictogram = await getFirstPictogram(language,{subject})
     verbPictogram = await getFirstPictogram(language,{verb})
     objectPictogram = await getFirstPictogram(language,{object})
-    
+    console.log(subjectPictogram)
+    console.log(verbPictogram)
+    console.log(objectPictogram)
+
+    // TO DO FROM HERE: FINISH CREATE SENTENCE
+
+    /*
     sentenceArray = new Array(subjectPictogram,verbPictogram,objectPictogram)
     
     req.body.createdBy = req.user.userId
@@ -44,6 +51,8 @@ const createSentence = async (req,res) => {
     const sentence = await Sentence.create(req.body);
     
     res.status(StatusCodes.CREATED).json({sentence})
+    */
+    res.send("create sentence")
 
 }
 

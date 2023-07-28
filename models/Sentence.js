@@ -1,9 +1,12 @@
 const mongoose = require('mongoose')
+const Pictogram = require('./Pictogram');
 
 const SentenceSchema = new mongoose.Schema({
     
-    sentence: {
-        type:Array
+    structure:{
+        type:[Pictogram.schema],
+        minLength: 3, // not sure about this
+        required:[true, 'please provide a minimal (s-v-o) sentence structure'],
     },
     language: {
         type: String,
@@ -12,15 +15,12 @@ const SentenceSchema = new mongoose.Schema({
           message: '{VALUE} is not supported',
         },
     },
-    
     createdBy:{
         type:mongoose.Types.ObjectId,
         ref: 'User',
         required:[true, 'Please provide user']
     }
+
 },{timestamps:true});
 
-
-
-//export mongoose model
 module.exports = mongoose.model('Sentence', SentenceSchema)
