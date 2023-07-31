@@ -28,6 +28,7 @@ const getFirstPictogram = async (language,string) => {
     
     const pictogramIdAlreadyExists = await Pictogram.findOne({ arasaacId: pictogramId})
     const pictogramMeaning = firstPictogram.keywords[0].keyword
+    let pictogramObject = {};
 
     if (!pictogramIdAlreadyExists){
         // if arasaac id is not found, it is a new pictogram
@@ -64,8 +65,10 @@ const getFirstPictogram = async (language,string) => {
                     language: language,
                     imageUrl: duplicateImageUrl["imageUrl"]
                 })
-    } 
-    pictogramObject = pictogramAlreadyExists
+    } else {
+        pictogramObject =  pictogramAlreadyExists
+    }
+    
     return pictogramObject
 }
 

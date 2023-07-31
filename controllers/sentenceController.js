@@ -36,17 +36,22 @@ const createSentence = async (req,res) => {
     const objectPictogram = await getFirstPictogram(language,{object})
     
     
-    sentenceArray = new Array(subjectPictogram,verbPictogram, objectPictogram)
+    sentenceArray = new Array(subjectPictogram,verbPictogram,objectPictogram)
    
     req.body.createdBy = req.user.userId
     req.body.structure =  sentenceArray
-    // se metto sempre la stessa frase la prende, visto che è una post diversa
-    const sentence = await Sentence.create(req.body);
     
-    res.status(StatusCodes.CREATED).json({sentence})
+    const sentenceAlreadyExists = await Sentence.findOne({ structure: sentenceArray, createdBy:req.user.userId})
+    if(!sentenceAlreadyExists){
+        const sentence = await Sentence.create(req.body);
+        res.status(StatusCodes.CREATED).json({sentence})
+    } else {
+        res.status(StatusCodes.CONFLICT).send('Duplicated sentence, please create a different one')
+    }
 }
 
 
+// adesso tocca a questa
 const updateSentence = async (req,res) => {
     
     const {
