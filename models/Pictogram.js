@@ -22,14 +22,23 @@ const PictogramSchema = new mongoose.Schema({
         required:[true, 'Please provide associated meaning'],
     },
 
+    language: {
+        type: String,
+        enum: {
+          values: ['en', 'it'],
+          message: '{VALUE} is not supported',
+        },
+        required:[true, 'Please provide pictogram language'],
+    },
+
     imageUrl:{
         type:String,
         required:[true, 'Please provide image url'],
+        
         validate: { 
             validator: validator.isURL,
             message: 'Please provide a valid url' 
         },
-        
     },
 });
 

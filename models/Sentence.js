@@ -5,8 +5,7 @@ const SentenceSchema = new mongoose.Schema({
     
     structure:{
         type:[Pictogram.schema],
-        minLength: 3, // not sure about this
-        required:[true, 'please provide a minimal (s-v-o) sentence structure'],
+        required:[true, 'please provide s-v-o sentence'],
     },
     language: {
         type: String,
@@ -14,6 +13,7 @@ const SentenceSchema = new mongoose.Schema({
           values: ['en', 'it'],
           message: '{VALUE} is not supported',
         },
+        required:[true, 'please provide sentence language'],
     },
     createdBy:{
         type:mongoose.Types.ObjectId,

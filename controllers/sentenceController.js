@@ -1,4 +1,5 @@
 const Sentence = require('../models/Sentence');
+const Pictogram = require('../models/Pictogram');
 const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
 const {getFirstPictogram} = require('../adapters/pictogramAdapter')
@@ -30,30 +31,19 @@ const createSentence = async (req,res) => {
         throw new CustomError.BadRequestError('Please provide language, subject, verb and object')
     }
     
+    const subjectPictogram = await getFirstPictogram(language,{subject})
+    const verbPictogram = await getFirstPictogram(language,{verb})
+    const objectPictogram = await getFirstPictogram(language,{object})
+    
+    
+    sentenceArray = new Array(subjectPictogram,verbPictogram, objectPictogram)
    
-    
-    subjectPictogram = await getFirstPictogram(language,{subject})
-    verbPictogram = await getFirstPictogram(language,{verb})
-    objectPictogram = await getFirstPictogram(language,{object})
-    console.log(subjectPictogram)
-    console.log(verbPictogram)
-    console.log(objectPictogram)
-
-    // TO DO FROM HERE: FINISH CREATE SENTENCE
-
-    /*
-    sentenceArray = new Array(subjectPictogram,verbPictogram,objectPictogram)
-    
     req.body.createdBy = req.user.userId
-    req.body.sentence = sentenceArray
-    req.body.language = language
-    
+    req.body.structure =  sentenceArray
+    // se metto sempre la stessa frase la prende, visto che è una post diversa
     const sentence = await Sentence.create(req.body);
     
     res.status(StatusCodes.CREATED).json({sentence})
-    */
-    res.send("create sentence")
-
 }
 
 

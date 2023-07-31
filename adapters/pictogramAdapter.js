@@ -2,6 +2,8 @@ const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
 const Pictogram = require('../models/Pictogram');
 
+
+// to be split into separate functions
 const getFirstPictogram = async (language,string) => {
     
     const sentencePart = Object.keys(string)[0]
@@ -20,47 +22,50 @@ const getFirstPictogram = async (language,string) => {
     if(!data.length){
         throw new CustomError.NotFoundError(`No pictogram associated with string ${meaning}`)
     }
-    
-   
     const firstPictogram = data[0]
     
-    pictogramObject = await createPictogramObject(firstPictogram, sentencePart)
-    return pictogramObject
-    
-}
-
-// to be moved in utils
-const getPictogramById = async (pictogramId) => {
-    
-    const urlId = `https://api.arasaac.org/v1/pictograms/${Number(pictogramId)}?url=true`
-    
-    const imageResp = await fetch(urlId)
-    const imageData = await imageResp.json()
-    
-    if(!Object.keys(imageData)){
-        throw new CustomError.NotFoundError(`No pictogram associated with ID ${pictogramId}`)
-    }
-    return imageData
-}
-
-// to be moved in utils
-const createPictogramObject = async (firstPictogram, sentencePart) => {
-    
     pictogramId = firstPictogram["_id"]
-    pictogramMeaning = firstPictogram.keywords[0].keyword
-    pictogramImage = await getPictogramById(pictogramId)
-    pictogramImageUrl = pictogramImage["image"]
+    
+    const pictogramIdAlreadyExists = await Pictogram.findOne({ arasaacId: pictogramId})
+    const pictogramMeaning = firstPictogram.keywords[0].keyword
 
+    if (!pictogramIdAlreadyExists){
+        // if arasaac id is not found, it is a new pictogram
+        
+        const urlId = `https://api.arasaac.org/v1/pictograms/${Number(pictogramId)}?url=true`
+        const imageResp = await fetch(urlId)
+        const imageData = await imageResp.json()
+    
+        if(!Object.keys(imageData)){
+            throw new CustomError.NotFoundError(`No pictogram associated with ID ${pictogramId}`)
+        }
 
-    const pictogramObject = await Pictogram.findOneAndUpdate(
-        { arasaacId:pictogramId },
-        { $setOnInsert: { 
-            sentencePart:sentencePart,
-            meaning: pictogramMeaning,
-            imageUrl: pictogramImageUrl 
-        }}, 
-        { upsert: true, returnOriginal: false }
-    )
+        const pictogramImageUrl = imageData["image"]
+        
+        pictogramObject = await Pictogram.create(
+            {
+                arasaacId: pictogramId,
+                sentencePart:sentencePart,
+                meaning: pictogramMeaning,
+                language: language,
+                imageUrl: pictogramImageUrl
+            })
+    } 
+
+    const pictogramAlreadyExists = await Pictogram.findOne({ arasaacId: pictogramId, language:language})
+    
+    if (!pictogramAlreadyExists){
+            const duplicateImageUrl = await Pictogram.findOne({arasaacId: pictogramId}, 'imageUrl -_id')
+            pictogramObject = await Pictogram.create(
+                {
+                    arasaacId: pictogramId,
+                    sentencePart:sentencePart,
+                    meaning: pictogramMeaning,
+                    language: language,
+                    imageUrl: duplicateImageUrl["imageUrl"]
+                })
+    } 
+    pictogramObject = pictogramAlreadyExists
     return pictogramObject
 }
 
