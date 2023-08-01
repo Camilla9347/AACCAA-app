@@ -5,7 +5,6 @@ const Pictogram = require('../models/Pictogram');
 
 // to be split into separate functions
 const getFirstPictogram = async (language,string) => {
-    
     const sentencePart = Object.keys(string)[0]
     const meaning = string[sentencePart]
     const availableLanguages = [ 'en', 'it']
@@ -72,6 +71,27 @@ const getFirstPictogram = async (language,string) => {
     return pictogramObject
 }
 
+
+const compareAndUpdatePictogram = async (sentence,sentencePart,word) => {
+
+    // make object compliant with getFirstPictogram syntax
+    const propertyName = sentencePart;
+    const string = {};
+    string[propertyName] = word;
+
+    let newItem = {}
+    
+    const found = sentence.structure.find(item => item.sentencePart === sentencePart && item.meaning === word);
+    
+    if (!found){
+        newItem = await getFirstPictogram(sentence.language, string)
+    }
+    return newItem
+
+}
+
+
 module.exports = {
-        getFirstPictogram
+        getFirstPictogram,
+        compareAndUpdatePictogram
 };
