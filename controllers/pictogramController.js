@@ -1,6 +1,7 @@
 const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
 const Pictogram = require('../models/Pictogram');
+const { searchByMeaningAndLang, searchById } = require('../adapters/imageAdapter');
 
 
 // to be split into separate functions
@@ -13,10 +14,9 @@ const getFirstPictogram = async (language,string) => {
         throw new CustomError.NotFoundError(`No language associated with string ${language}`)
     }
 
-    const searchUrl = `https://api.arasaac.org/v1/pictograms/${language}/bestsearch/${meaning}`
+   
+    const data = await searchByMeaningAndLang(language,meaning)
     
-    const searchResp = await fetch(searchUrl)
-    const data = await searchResp.json()
     
     if(!data.length){
         throw new CustomError.NotFoundError(`No pictogram associated with string ${meaning}`)
@@ -31,10 +31,7 @@ const getFirstPictogram = async (language,string) => {
 
     if (!pictogramIdAlreadyExists){
         // if arasaac id is not found, it is a new pictogram
-        
-        const urlId = `https://api.arasaac.org/v1/pictograms/${Number(pictogramId)}?url=true`
-        const imageResp = await fetch(urlId)
-        const imageData = await imageResp.json()
+        const imageData = await searchById(pictogramId)
     
         if(!Object.keys(imageData)){
             throw new CustomError.NotFoundError(`No pictogram associated with ID ${pictogramId}`)
