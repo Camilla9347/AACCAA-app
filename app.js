@@ -73,6 +73,7 @@ app.use(NotFoundMiddleware);
 // when custom errors come into play
 app.use(errorHandlerMiddleware);
 
+
 // setup start port variable (4500) and start function
 const port = process.env.PORT || 4500
 const start = async () => {
