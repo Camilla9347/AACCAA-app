@@ -40,6 +40,15 @@ const PictogramSchema = new mongoose.Schema({
             message: 'Please provide a valid url' 
         },
     },
+
+    soundUrl:{
+        type:String,
+        //required:[true, 'Please provide sound url'],
+        validate: { 
+            validator: validator.isURL,
+            message: 'Please provide a valid url' 
+        },
+    }
 });
 
 module.exports = mongoose.model('Pictogram', PictogramSchema)

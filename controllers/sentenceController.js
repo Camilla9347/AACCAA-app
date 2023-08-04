@@ -1,8 +1,7 @@
 const Sentence = require('../models/Sentence');
-const Pictogram = require('../models/Pictogram');
 const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
-const {getFirstPictogram, compareAndUpdatePictogram} = require('./pictogramController')
+const {getFirstPictogram, compareAndUpdatePictogram} = require('../utils/pictogram')
 
 const getAllSentences = async (req,res) => {
     const sentences = await Sentence.find({createdBy:req.user.userId}).sort('createdAt')

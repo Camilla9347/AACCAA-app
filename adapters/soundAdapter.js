@@ -1,41 +1,74 @@
-
-
+const {StatusCodes} = require('http-status-codes')
+const CustomError = require('../errors')
 const AWS = require('aws-sdk')
-const fs = require('fs')
-require('dotenv').config()
+const cloudinary = require('cloudinary').v2
 
-AWS.config.credentials = new AWS.Credentials(
-    process.env.AWS_ACCESS_KEY, // Your access key ID
-    process.env.AWS_SECRET_KEY, // Your secret access key
-  );
-  
-  // Define your service region.
-AWS.config.region = "eu-north-1"; // Can also be saved in ENV vars.
-
-const Polly = new AWS.Polly({
-    region: AWS.config.region
-})
-
-const input = {
-    Text: "Vaffanculo",
-    LanguageCode: "it-IT",
-    OutputFormat: "mp3",
-    VoiceId: "Carla"
+const storeSoundInCloud = async(sound) => {
+    const result = await cloudinary.uploader.upload_stream({
+        use_filename:true,
+        folder: "Polly-SDE",
+        resource_type: "auto"
+    }).end(sound);
+    console.log(result.url)
+    
 }
 
-Polly.synthesizeSpeech(input, (err,data) => {
-    if (err){
-        console.log(err)
-        return
-    }
-    if (data.AudioStream instanceof Buffer){
-        fs.writeFile('hello.mp3', data.AudioStream, (fsErr)=> {
-            if (fsErr){
-                console.error(fsErr)
-                return
-            }
-            console.log('Success')
-        })
-    }
-})
+const getSoundFromPolly = async (pictogramMeaning,language) => {
 
+    const Polly = new AWS.Polly({
+        region: AWS.config.region
+    })
+
+    const rndInt = Math.floor(Math.random() * 2) + 1
+
+    let voice = ""
+    let code = ""
+
+    if (language === "en") {
+        if (rndInt == 2){
+            voice = "Joanna"
+        } else {
+            voice = "Joey"
+        }
+        code = "en-US"
+    }
+
+    if  (language === "it") {
+        if (rndInt == 2){
+            voice = "Carla"
+        } else {
+            voice = "Giorgio"
+        }
+
+        code = "it-IT"
+    }
+    // per ora supportiamo solo italiano e inglese
+    const input = {
+        Text: pictogramMeaning,
+        LanguageCode: code,
+        OutputFormat: "mp3",
+        VoiceId: voice
+    }
+
+    console.log(input)
+
+    
+    Polly.synthesizeSpeech(input, (err,data) => {
+        if (err){
+            console.log(err)
+            return
+        }
+        if (data.AudioStream instanceof Buffer){
+            const result = storeSoundInCloud(data.AudioStream)
+            // url del suono
+            //console.log(result)
+        }
+    })
+    
+    
+}
+
+module.exports = {
+    getSoundFromPolly,
+    storeSoundInCloud 
+}

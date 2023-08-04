@@ -15,6 +15,20 @@ const app = express();
 // rest of the packages
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
+const AWS = require('aws-sdk')
+
+AWS.config.credentials = new AWS.Credentials(
+    process.env.AWS_ACCESS_KEY, // Your access key ID
+    process.env.AWS_SECRET_KEY, // Your secret access key
+);
+AWS.config.region = "eu-north-1";
+
+const cloudinary = require('cloudinary').v2
+cloudinary.config({
+    cloud_name:process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET
+})
 
 // database
 // import connect() and invoke the starter
