@@ -26,6 +26,7 @@ const storeSoundInCloud = async(sound) => {
         },
         (err, result) => {
           if (err) return console.error(err);
+          console.log("inside cloudinary")
           console.log(result);
         }
       );
@@ -71,7 +72,7 @@ const getSoundFromPolly = async (pictogramMeaning,language) => {
         VoiceId: voice
     }
 
-    console.log(input)
+    //console.log(input)
 
     Polly.synthesizeSpeech(input, (err,data) => {
         if (err){
@@ -80,6 +81,7 @@ const getSoundFromPolly = async (pictogramMeaning,language) => {
         }
         if (data.AudioStream instanceof Buffer){
             const result = storeSoundInCloud(data.AudioStream)
+            console.log("inside Polly")
             console.log(result)
             /*
             fs.writeFile("audioFile.mp3", data.AudioStream, (fsErr) => {
