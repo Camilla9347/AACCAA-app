@@ -43,7 +43,7 @@ const PictogramSchema = new mongoose.Schema({
 
     soundUrl:{
         type:String,
-        //required:[true, 'Please provide sound url'],
+        required:[true, 'Please provide sound url'],
         validate: { 
             validator: validator.isURL,
             message: 'Please provide a valid url' 

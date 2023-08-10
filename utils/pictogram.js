@@ -3,6 +3,7 @@ const CustomError = require('../errors');
 const Pictogram = require('../models/Pictogram');
 const { searchByMeaningAndLang, searchById } = require('../adapters/imageAdapter');
 const {getSoundFromPolly} = require('../adapters/soundAdapter');
+const {uploadStream} = require('../adapters/cloudAdapter')
 
 
 // to be split into separate functions
@@ -40,10 +41,19 @@ const getFirstPictogram = async (language,string) => {
 
         const pictogramImageUrl = imageData["image"]
 
+        const soundData = await getSoundFromPolly(pictogramMeaning,language);
+        
+        if(!Object.keys(soundData)){
+            throw new CustomError.NotFoundError(`No audio associated with ID ${pictogramId}`)
+        }
 
-        const soundData = await getSoundFromPolly(pictogramMeaning,language)
-
-        //const pictogramSoundUrl =
+        const soundCloud = await uploadStream(soundData.AudioStream);
+        
+        if(!Object.keys(soundCloud)){
+            throw new CustomError.NotFoundError(`No url associated with AudioStream ${soundData.AudioStream}`)
+        }
+        
+        const pictogramSoundUrl = soundCloud["secure_url"];
         
         pictogramObject = await Pictogram.create(
             {
@@ -51,8 +61,8 @@ const getFirstPictogram = async (language,string) => {
                 sentencePart:sentencePart,
                 meaning: pictogramMeaning,
                 language: language,
-                imageUrl: pictogramImageUrl
-                //soundUrl: pictoramSoundUrl
+                imageUrl: pictogramImageUrl,
+                soundUrl: pictogramSoundUrl
             })
     } 
 
@@ -66,8 +76,8 @@ const getFirstPictogram = async (language,string) => {
                     sentencePart:sentencePart,
                     meaning: pictogramMeaning,
                     language: language,
-                    imageUrl: duplicateImageUrl["imageUrl"]
-                    //soundUrl: pictogramSoundUrl
+                    imageUrl: duplicateImageUrl["imageUrl"],
+                    soundUrl: pictogramSoundUrl
                 })
     } else {
         pictogramObject =  pictogramAlreadyExists
