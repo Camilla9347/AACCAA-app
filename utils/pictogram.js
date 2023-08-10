@@ -40,6 +40,7 @@ const getFirstPictogram = async (language,string) => {
 
         const pictogramImageUrl = imageData["image"]
 
+
         const soundData = await getSoundFromPolly(pictogramMeaning,language)
 
         //const pictogramSoundUrl =

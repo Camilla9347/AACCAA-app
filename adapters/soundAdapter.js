@@ -2,19 +2,40 @@ const {StatusCodes} = require('http-status-codes')
 const CustomError = require('../errors')
 const AWS = require('aws-sdk')
 const cloudinary = require('cloudinary').v2
+const fs = require('fs')
+const { Readable } = require("stream");
 
 const storeSoundInCloud = async(sound) => {
+    
+    /*
     const result = await cloudinary.uploader.upload_stream({
         use_filename:true,
         folder: "Polly-SDE",
         resource_type: "auto"
-    }).end(sound);
-    console.log(result.url)
+    });
+    streamifier.createReadStream(sound).pipe(result);
+    console.log(result)
+    return result;
+    */
+
+    const theTransformStream = cloudinary.uploader.upload_stream(
+        {  
+            use_filename:true,
+            folder: "Polly-SDE",
+            resource_type: "auto"
+        },
+        (err, result) => {
+          if (err) return console.error(err);
+          console.log(result);
+        }
+      );
+      let str = Readable.from(sound);
+      str.pipe(theTransformStream);
+      return str
     
 }
 
 const getSoundFromPolly = async (pictogramMeaning,language) => {
-
     const Polly = new AWS.Polly({
         region: AWS.config.region
     })
@@ -52,7 +73,6 @@ const getSoundFromPolly = async (pictogramMeaning,language) => {
 
     console.log(input)
 
-    
     Polly.synthesizeSpeech(input, (err,data) => {
         if (err){
             console.log(err)
@@ -60,12 +80,18 @@ const getSoundFromPolly = async (pictogramMeaning,language) => {
         }
         if (data.AudioStream instanceof Buffer){
             const result = storeSoundInCloud(data.AudioStream)
-            // url del suono
-            //console.log(result)
+            console.log(result)
+            /*
+            fs.writeFile("audioFile.mp3", data.AudioStream, (fsErr) => {
+                if(fsErr){
+                    console.error(err)
+                    return
+                }
+                console.log("Success")
+            })
+            */
         }
     })
-    
-    
 }
 
 module.exports = {

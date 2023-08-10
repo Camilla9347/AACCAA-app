@@ -16,12 +16,14 @@ const app = express();
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
 const AWS = require('aws-sdk')
+require('aws-sdk/lib/maintenance_mode_message').suppress = true;
 
 AWS.config.credentials = new AWS.Credentials(
     process.env.AWS_ACCESS_KEY, // Your access key ID
     process.env.AWS_SECRET_KEY, // Your secret access key
 );
 AWS.config.region = "eu-north-1";
+
 
 const cloudinary = require('cloudinary').v2
 cloudinary.config({
@@ -55,6 +57,7 @@ app.use(morgan('tiny'));
 // access json data in req.body
 // 1
 app.use(express.json());
+
 // once first request made and cookie got back
 // then with each request, the browser will send that cookie (automatically to the server)
 app.use(cookieParser(process.env.JWT_SECRET)); // sign cookies so client cannot tamper with them
