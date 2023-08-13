@@ -1,7 +1,7 @@
 const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
 const Pictogram = require('../models/Pictogram');
-const { searchByMeaningAndLang, searchById } = require('../adapters/imageAdapter');
+const { searchByMeaningAndLang, searchById } = require('../adapters/pictogramAdapter');
 const {getSoundFromPolly} = require('../adapters/soundAdapter');
 const {uploadStream} = require('../adapters/cloudAdapter')
 
@@ -67,9 +67,25 @@ const getFirstPictogram = async (language,string) => {
     } 
 
     const pictogramAlreadyExists = await Pictogram.findOne({ arasaacId: pictogramId, language:language})
-    
+    // se l'id del pittogramma c'è ma la lingua è cambiata, l'immagine non devo aggiornarla ma 
+    // ma l'audio devo aggiornarlo!
+
     if (!pictogramAlreadyExists){
             const duplicateImageUrl = await Pictogram.findOne({arasaacId: pictogramId}, 'imageUrl -_id')
+            const soundData = await getSoundFromPolly(pictogramMeaning,language);
+        
+            if(!Object.keys(soundData)){
+                throw new CustomError.NotFoundError(`No audio associated with ID ${pictogramId}`)
+            }
+
+            const soundCloud = await uploadStream(soundData.AudioStream);
+            
+            if(!Object.keys(soundCloud)){
+                throw new CustomError.NotFoundError(`No url associated with AudioStream ${soundData.AudioStream}`)
+            }
+            
+            const pictogramSoundUrl = soundCloud["secure_url"];
+
             pictogramObject = await Pictogram.create(
                 {
                     arasaacId: pictogramId,
