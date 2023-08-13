@@ -1,7 +1,7 @@
 const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
 const Pictogram = require('../models/Pictogram');
-const { searchByMeaningAndLang, searchById } = require('../adapters/pictogramAdapter');
+const { searchByMeaningAndLang, searchById } = require('../adapters/imageAdapter');
 const {getSoundFromPolly} = require('../adapters/soundAdapter');
 const {uploadStream} = require('../adapters/cloudAdapter')
 

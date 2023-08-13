@@ -65,16 +65,17 @@ app.use(cookieParser(process.env.JWT_SECRET)); // sign cookies so client cannot 
 // home page route
 // 2 check for all routes
 app.get('/', (req,res) => {
-    res.send('AAC API')
+    res.send('AACCAA')
 })
 
+/*
 app.get('/api/v1', (req,res) => {
     //console.log(req.cookies)
     // once cookie is signed, it is available from signedCookies
     console.log(req.signedCookies)
     res.send('AAC API')
 })
-
+*/
 
 // middleware for authentication routes
 app.use('/api/v1/auth', authRouter)
