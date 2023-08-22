@@ -23,7 +23,8 @@ const getFirstPictogram = async (language,string) => {
     // take first pictogram from the list of best pictograms provided by ARASAAC GET API call
     const firstPictogram = data[0]
     pictogramId = firstPictogram["_id"]
-
+    // take the meaning that ARASAAC uses for this pictogram (for consistency/reuse)
+    const pictogramMeaning = firstPictogram.keywords[0].keyword
     //let pictogramObject = {};
     
     // check if the pictogram ID (from ARASAAC) already exists in the database
@@ -33,41 +34,30 @@ const getFirstPictogram = async (language,string) => {
     // then it is a brand new pictogram
     // and needs to be added from scratch
     if (!pictogramIdAlreadyExists){    
-        const pictogramObject = addNewPictogram(firstPictogram, pictogramid)
+        const pictogramObject = await addNewPictogram(language, sentencePart,pictogramMeaning, pictogramId)
         return pictogramObject;
     } 
 
-
-
-    const pictogramAlreadyExists = await Pictogram.findOne({ arasaacId: pictogramId, language:language})
-    // se l'id del pittogramma c'è ma la lingua è cambiata, l'immagine non devo aggiornarla ma 
-    // ma l'audio devo aggiornarlo!
-
+    // if the pictogram ID (from ARASAAC) is found, then we need to see if language 
+    // and/or sentencePart is the same
+    const pictogramAlreadyExists = await Pictogram.findOne({ arasaacId: pictogramId, language:language, sentencePart:sentencePart})
+    
     if (!pictogramAlreadyExists){
-            const duplicateImageUrl = await Pictogram.findOne({arasaacId: pictogramId}, 'imageUrl -_id')
-            const soundData = await getSoundFromPolly(pictogramMeaning,language);
-        
-            if(!Object.keys(soundData)){
-                throw new CustomError.NotFoundError(`No audio associated with ID ${pictogramId}`)
-            }
-
-            const soundCloud = await uploadStream(soundData.AudioStream);
+        // if the pictogram ID (from ARASAAC) is found and the sentencePart is the same
+        //then we need to see if language is the same
+        const langAlreadyExists = await Pictogram.findOne({ arasaacId: pictogramId, language:language})
+        if (!langAlreadyExists){
+            const pictogramObject = await updateLangPictogram(language, sentencePart, pictogramMeaning,pictogramId)
+            return pictogramObject;
+        }
+        // if the pictogram ID (from ARASAAC) is found and the language is the same
+        //then we need to see if sentencePart is the same
+        const partAlreadyExists = await Pictogram.findOne({ arasaacId: pictogramId, sentencePart:sentencePart})
+        if (!partAlreadyExists){
+            const pictogramObject = await updatePartPictogram(language, sentencePart, pictogramMeaning,pictogramId)
+            return pictogramObject;
+        }
             
-            if(!Object.keys(soundCloud)){
-                throw new CustomError.NotFoundError(`No url associated with AudioStream ${soundData.AudioStream}`)
-            }
-            
-            const pictogramSoundUrl = soundCloud["secure_url"];
-
-            pictogramObject = await Pictogram.create(
-                {
-                    arasaacId: pictogramId,
-                    sentencePart:sentencePart,
-                    meaning: pictogramMeaning,
-                    language: language,
-                    imageUrl: duplicateImageUrl["imageUrl"],
-                    soundUrl: pictogramSoundUrl
-                })
     } else {
         pictogramObject =  pictogramAlreadyExists
     }
@@ -77,7 +67,7 @@ const getFirstPictogram = async (language,string) => {
 
 
 const compareAndUpdatePictogram = async (sentence,sentencePart,word) => {
-
+    
     // make object compliant with getFirstPictogram syntax
     const propertyName = sentencePart;
     const string = {};
@@ -95,9 +85,8 @@ const compareAndUpdatePictogram = async (sentence,sentencePart,word) => {
 }
 
 
-const addNewPictogram = async (firstPictogram, pictogramId) =>{  
-    // take the meaning that ARASAAC uses for this pictogram (for consistency/reuse)
-    const pictogramMeaning = firstPictogram.keywords[0].keyword
+const addNewPictogram = async (language, sentencePart, pictogramMeaning, pictogramId) =>{  
+    
     // take the pictogram url from ARASAAC 
     const imageData = await searchById(pictogramId)
     if(!Object.keys(imageData)){
@@ -105,19 +94,8 @@ const addNewPictogram = async (firstPictogram, pictogramId) =>{
     }
     const pictogramImageUrl = imageData["image"]
     
-    // take the sound as a stream of audio from Amazon Polly % API call
-    const soundData = await getSoundFromPolly(pictogramMeaning,language);
-    if(!Object.keys(soundData)){
-        throw new CustomError.NotFoundError(`No audio associated with ID ${pictogramId}`)
-    }
-    // upload it to the cloud
-    const soundCloud = await uploadStream(soundData.AudioStream);
-    if(!Object.keys(soundCloud)){
-        throw new CustomError.NotFoundError(`No url associated with AudioStream ${soundData.AudioStream}`)
-    }
-    // and get the sound url from Cloudinary % API call
-    const pictogramSoundUrl = soundCloud["secure_url"];
-
+    const pictogramSoundUrl = await getAndStoreSound(pictogramMeaning,language,pictogramId)
+    
     // create the Pictogram Object in the database
     const pictogramObject = await Pictogram.create(
         {
@@ -130,6 +108,56 @@ const addNewPictogram = async (firstPictogram, pictogramId) =>{
         })
     return pictogramObject;
 }
+
+const updateLangPictogram = async (language, sentencePart, pictogramMeaning, pictogramId) => {  
+        const duplicateImageUrl = await Pictogram.findOne({arasaacId: pictogramId}, 'imageUrl -_id')
+        const pictogramSoundUrl = await getAndStoreSound(pictogramMeaning,language,pictogramId)
+
+        pictogramObject = await Pictogram.create(
+            {
+                arasaacId: pictogramId,
+                sentencePart:sentencePart,
+                meaning: pictogramMeaning,
+                language: language,
+                imageUrl: duplicateImageUrl["imageUrl"],
+                soundUrl: pictogramSoundUrl
+            })
+
+}
+
+
+const updatePartPictogram = async (language, sentencePart, pictogramMeaning,pictogramId) =>{
+    const duplicateImageUrl = await Pictogram.findOne({arasaacId: pictogramId}, 'imageUrl -_id')
+    const duplicateSoundurl = await Pictogram.findOne({arasaacId: pictogramId}, 'soundUrl -_id')
+    const pictogramObject = await Pictogram.create(
+        {
+            arasaacId: pictogramId,
+            sentencePart:sentencePart,
+            meaning: pictogramMeaning,
+            language: language,
+            imageUrl: duplicateImageUrl["imageUrl"],
+            soundUrl: duplicateSoundurl["soundUrl"]
+        })
+    return pictogramObject
+}
+ 
+const getAndStoreSound = async(pictogramMeaning,language,pictogramId) =>{
+    // take the sound as a stream of audio from Amazon Polly % API call
+    const soundData = await getSoundFromPolly(pictogramMeaning,language);
+    if(!Object.keys(soundData)){
+        throw new CustomError.NotFoundError(`No audio associated with ID ${pictogramId}`)
+    }
+    // upload it to the cloud % API call
+    const soundCloud = await uploadStream(soundData.AudioStream);
+    if(!Object.keys(soundCloud)){
+        throw new CustomError.NotFoundError(`No url associated with AudioStream ${soundData.AudioStream}`)
+    }
+    // and get the sound url from Cloudinary % API call
+    const pictogramSoundUrl = soundCloud["secure_url"];
+    return pictogramSoundUrl;
+}
+
+
 
 module.exports = {
         getFirstPictogram,
