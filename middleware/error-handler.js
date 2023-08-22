@@ -15,8 +15,6 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     customError.statusCode = 400;
   }
   // handle email duplicate error
- 
- 
   if (err.code && err.code === 11000) {
     customError.msg = `Duplicate value entered for ${Object.keys(
       err.keyValue

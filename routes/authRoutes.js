@@ -10,8 +10,6 @@ const {
 } = require('../controllers/authController')
 
 
-// post('/register') post('/login') get('/logout')
-
 router.post('/register', register)
 router.post('/login', login)
 router.get('/logout', logout)
