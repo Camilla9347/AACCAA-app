@@ -1,7 +1,7 @@
 const Sentence = require('../models/Sentence');
 const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
-const {getFirstPictogram} = require('../adapters/pictogramAdapter')
+const {getFirstPictogram, compareAndUpdatePictogram} = require('../utils/pictogram')
 
 const getAllSentences = async (req,res) => {
     const sentences = await Sentence.find({createdBy:req.user.userId}).sort('createdAt')
@@ -30,21 +30,23 @@ const createSentence = async (req,res) => {
         throw new CustomError.BadRequestError('Please provide language, subject, verb and object')
     }
     
+    const subjectPictogram = await getFirstPictogram(language,{subject})
+    const verbPictogram = await getFirstPictogram(language,{verb})
+    const objectPictogram = await getFirstPictogram(language,{object})
     
-    subjectPictogram = await getFirstPictogram(language,{subject})
-    verbPictogram = await getFirstPictogram(language,{verb})
-    objectPictogram = await getFirstPictogram(language,{object})
     
     sentenceArray = new Array(subjectPictogram,verbPictogram,objectPictogram)
-    
+   
     req.body.createdBy = req.user.userId
-    req.body.sentence = sentenceArray
-    req.body.language = language
+    req.body.structure =  sentenceArray
     
-    const sentence = await Sentence.create(req.body);
-    
-    res.status(StatusCodes.CREATED).json({sentence})
-
+    const sentenceAlreadyExists = await Sentence.findOne({ structure: sentenceArray, createdBy:req.user.userId})
+    if(!sentenceAlreadyExists){
+        const sentence = await Sentence.create(req.body);
+        res.status(StatusCodes.CREATED).json({sentence})
+    } else {
+        res.status(StatusCodes.CONFLICT).send('Duplicated sentence, please create a different one')
+    }
 }
 
 
@@ -61,6 +63,7 @@ const updateSentence = async (req,res) => {
         throw new CustomError.BadRequestError('subject, verb, or object fields cannot be empty')
 
     }
+
     const sentence = await Sentence.findOne({
         _id:sentenceId,
         createdBy: userId
@@ -69,42 +72,43 @@ const updateSentence = async (req,res) => {
     if(!sentence){
         throw new CustomError.NotFoundError(`No sentence with id: ${sentenceId}`)
     }
-    
-    const updatedSentence = await compareAndUpdateSentence(sentence, subject,verb,object)
-    
 
+
+    const newSubject = await compareAndUpdatePictogram(sentence, "subject", subject)
+    const newVerb = await compareAndUpdatePictogram(sentence, "verb", verb)
+    const newObject= await compareAndUpdatePictogram(sentence, "object", object)
+    
+    // codice triplicato -> funzione?
+    if (!(Object.keys(newSubject).length ===0)){
+        foundIndex = sentence.structure.findIndex(item => item.sentencePart === "subject");
+        sentence.structure[foundIndex] = newSubject
+
+    }
+    if (!(Object.keys(newVerb).length ===0)){
+        foundIndex = sentence.structure.findIndex(item => item.sentencePart === "verb");
+        sentence.structure[foundIndex] = newVerb
+
+    }
+    if (!(Object.keys(newObject).length ===0)){
+        foundIndex = sentence.structure.findIndex(item => item.sentencePart === "object");
+        sentence.structure[foundIndex] = newObject
+    }
+    
+    // updates only if different
     const updatedDbSentence = await Sentence.findByIdAndUpdate(
         {
             _id:sentenceId,
             createdBy: userId
         },
-        updatedSentence,
+        sentence,
         {new:true, runValidators:true}
     
     ) 
     res.status(StatusCodes.OK).json(updatedDbSentence)
 }
 
-// to be moved in utils
-const compareAndUpdateSentence = async (sentence, subject, verb, object) => {
-    if(sentence["sentence"][0].subject !== subject){
-        const newSubject = await getFirstPictogram(sentence["language"], {subject})
-        sentence["sentence"][0] = newSubject
-    }
-    
-    if(sentence["sentence"][1].verb !== verb){
-        const newVerb = await getFirstPictogram(sentence["language"], {verb})
-        sentence["sentence"][1] = newVerb
-    }
-    
-    if(sentence["sentence"][2].object !== object){
-        const newObject = await getFirstPictogram(sentence["language"], {object})
-        sentence["sentence"][2] = newObject
-    }
-    return sentence
-}
 
-
+// cancelli la frase ma non i pittogrammi
 const deleteSentence = async (req,res) => {
     const {
         user: {userId}, 

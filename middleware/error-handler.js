@@ -16,6 +16,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   }
   // handle email duplicate error
  
+ 
   if (err.code && err.code === 11000) {
     customError.msg = `Duplicate value entered for ${Object.keys(
       err.keyValue
@@ -27,7 +28,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     customError.msg = `No item found with id : ${err.value}`;
     customError.statusCode = 404;
   }
-
+  
   return res.status(customError.statusCode).json({ msg: customError.msg });
 };
 
