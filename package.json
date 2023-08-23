@@ -1,12 +1,12 @@
 {
-  "name": "aac-api",
+  "name": "aaccaa-app",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js"
   },
-  "author": "",
+  "author": "Camilla Pelagalli",
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1429.0",
