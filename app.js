@@ -15,7 +15,7 @@ const express = require('express');
 const app = express();
 
 // rest of the packages
-//const morgan = require('morgan')
+const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
 const AWS = require('aws-sdk')
 
@@ -59,12 +59,11 @@ app.use(
 );
 
 // Morgan Package: know which routes you are hitting (development phase)
-//app.use(morgan('tiny'));
+app.use(morgan('tiny'));
 
 // setup express.json() middleware
 // access json data in req.body
 // 1
-//app.use(express.static('./public'));
 app.use(express.json());
 
 app.use(helmet());
