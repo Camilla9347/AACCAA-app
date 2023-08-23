@@ -64,6 +64,7 @@ app.use(
 // setup express.json() middleware
 // access json data in req.body
 // 1
+app.use(express.static('./public'));
 app.use(express.json());
 
 app.use(helmet());
