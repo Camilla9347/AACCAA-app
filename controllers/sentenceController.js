@@ -64,6 +64,10 @@ const updateSentence = async (req,res) => {
         user: {userId}, 
         params: {id: sentenceId}
     } = req
+
+    if (!subject || !verb || !object){
+        throw new CustomError.BadRequestError('Please provide language, subject, verb and object')
+    }
     
     // check that single pictograms are present
     if (subject==='' || verb==='' || object===''){
