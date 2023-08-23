@@ -4,8 +4,6 @@ const User = require('../models/User')
 const {StatusCodes} = require('http-status-codes')
 const CustomError = require('../errors')
 const { attachCookiesToResponse } = require('../utils')
-const { compare } = require('bcryptjs')
-
 
 // Register Controller
 // create user
@@ -17,14 +15,14 @@ const register = async (req, res) => {
         throw new CustomError.BadRequestError('Email already exists')
     }
 
+    // create/add User to the User collection of the database
+    // following moongose User schema (directly from req.body)
     const user = await User.create({...req.body});
     
-    // to protect password, used as payload
     const tokenUser = {name:user.name, userId:user._id};
     
     attachCookiesToResponse({ res, user: tokenUser });
    
-    // send response with tokenUser and token
     res.status(StatusCodes.CREATED).json({user: tokenUser})
 }
 
@@ -46,10 +44,9 @@ const login = async (req, res) => {
     }
     // if everything is correct, attach cookie
     // and send back the same response as in register
-
     const tokenUser = {name:user.name, userId:user._id};
     attachCookiesToResponse({ res, user: tokenUser });
-    // 3 send response with tokenUser and token
+    //send response with tokenUser
     res.status(StatusCodes.CREATED).json({user: tokenUser})
 
 }

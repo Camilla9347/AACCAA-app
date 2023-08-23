@@ -1,7 +1,7 @@
 // This function takes as input the following arguments:
-// 1) language, provided by user as a string, either "en" or "it"
-// 2) meaning, provided by user as a string, such as "I", or "love", or "apple"
-// and returns best pictograms based on the provided meaning keyword, 
+// 1) language, forwarded by the Pictogram util (getFirstPictogram() function), either "en" or "it"
+// 2) meaning, forwarded by the Pictogram util (getFirstPictogram() function), such as "I", or "love", or "apple"
+// and returns a list of best pictograms based on the provided meaning and language parameters (embedded in URL), 
 // by fetching the response from ARASAAC GET API call
 const searchByMeaningAndLang = async (language,meaning) => {
     const searchUrl = `https://api.arasaac.org/v1/pictograms/${language}/bestsearch/${meaning}`
@@ -11,7 +11,7 @@ const searchByMeaningAndLang = async (language,meaning) => {
 }
 
 // This function takes as input the following argument:
-// 1) pictogramId, provided by ARASAAC, such as 2617
+// 1) pictogramId, forwarded by the Pictogram util (getFirstPictogram() function), such as 2617
 // and returns pictogram image url,
 // by fetching the response from ARASAAC GET API call
 const searchById = async (pictogramId) => {

@@ -10,7 +10,7 @@ const SentenceSchema = new mongoose.Schema({
     language: {
         type: String,
         enum: {
-          values: ['en', 'it'],
+          values: ['en', 'it', 'fr'],
           message: '{VALUE} is not supported',
         },
         required:[true, 'please provide sentence language'],

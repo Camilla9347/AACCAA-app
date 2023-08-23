@@ -25,7 +25,7 @@ const PictogramSchema = new mongoose.Schema({
     language: {
         type: String,
         enum: {
-          values: ['en', 'it'],
+          values: ['en', 'it','fr'],
           message: '{VALUE} is not supported',
         },
         required:[true, 'Please provide pictogram language'],
