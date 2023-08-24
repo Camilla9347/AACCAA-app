@@ -78,7 +78,9 @@ app.use(cookieParser(process.env.JWT_SECRET)); // sign cookies so client cannot 
 // 2 check for all routes
 
 app.get('/', (req,res) => {
-    res.send('AACCAA')
+    res.send('<h3>Welcome to AACCAA-app !</h3>' + 
+    '<a href="https://documenter.getpostman.com/view/9638339/2s9Y5Wx3Ko"> This is the Postman AACCAA-app API documentation</a>'
+    )
 })
 
 // middleware for authentication routes
