@@ -10,6 +10,11 @@ const cors = require('cors')
 const xss = require('xss-clean')
 const rateLimiter = require('express-rate-limit')
 
+//Swagger
+const swaggerUI = require('swagger-ui-express')
+const YAML = require('yamljs')
+const swaggerDocument = YAML.load('./swagger.yaml')
+
 // Setup Basic Express Server
 const express = require('express');
 const app = express();
@@ -74,14 +79,20 @@ app.use(xss());
 // then with each request, the browser will send that cookie (automatically to the server)
 app.use(cookieParser(process.env.JWT_SECRET)); // sign cookies so client cannot tamper with them
 
+
+
 // home page route
 // 2 check for all routes
-
 app.get('/', (req,res) => {
-    res.send('<h3>Welcome to AACCAA-app !</h3>' + 
-    '<a href="https://documenter.getpostman.com/view/9638339/2s9Y5Wx3Ko"> This is the Postman AACCAA-app API documentation</a>'
+    res.send('<h2>Welcome to AACCAA-app !</h2>' + 
+    '<a href="https://documenter.getpostman.com/view/9638339/2s9Y5Wx3Ko"> This is the Postman AACCAA-app API documentation</a>' +
+    '<a href="/swagger-api-docs"> This is the swagger AACCAA-app API documentation</a>' +
+    '<h4> We note that Cookie authentication is currently not supported for "try it out" requests on the Swagger API documentation due to browser security restrictions. !</h4>'+
+    '<a href="https://github.com/swagger-api/swagger-js/issues/1163">  Click here for more info </a>'
     )
 })
+
+app.use('/swagger-api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // middleware for authentication routes
 app.use('/api/v1/auth', authRouter)

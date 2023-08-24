@@ -1,0 +1,4694 @@
+openapi: 3.0.0
+info:
+  title: AACCAA-API
+  description: >-
+    This is the API documentation for the AACCAA service-oriented application, proposed as Final Project for the Service Design and Engeneering (SDE) course, held by professor Maurizio Marchese and researcher Lorenzo Angeli in the first semester (fall 2022) of the Computer Science Master's Degree Course.
+
+
+    This application is intended as an aid for relatives, care-givers, therapists, teachers and educators of children or adults excluded from verbal and oral communication, such as kids in the autism spectrum.
+
+
+    This application employs the standard AAC pictograms provided by the Aragonese Center of Augmentative and Alternative Communication ([https://arasaac.org/](https://arasaac.org/)).
+
+
+    The AACCAA-app main process lets the user authenticate, create, edit or delete a sentence. The user can also retrieve all the created sentences or a specific single sentence.
+
+
+    The user can create a sentence made up of three pictograms, each corresponding to the typed subject, verb and object.
+
+
+    Especially, the AACCAA-app retrieves the pictogram images and matching mp3 sounds and chains them back into an enriched sentence.
+  contact: {}
+  version: '1.0'
+servers:
+- url: https://aaccaa-app.onrender.com/api/v1
+  variables: {}
+paths:
+  /auth/register:
+    post:
+      tags:
+      - Authentication
+      summary: Register User
+      description: >-
+        This API allows you to register to the AACCAA application and have access to its services.
+
+
+        In order to do so, you need to provide _name_, _email_ and _password_ as strings in the request body, following JSON format.
+
+
+        A successful response (201 created) provides the _name_ and _userId_ of the registered user in JSON format.
+
+
+        Trying to register with the same email twice will result in an error (400 Bad Request).
+
+
+        Trying to register with an invalid email will result in an error (400 Bad Request).
+      operationId: RegisterUser
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterUserRequest'
+              - example:
+                  name: Camilla Pelagalli
+                  email: camilla.pelagalli@studenti.unitn.it
+                  password: secretCamilla
+            example:
+              name: Camilla Pelagalli
+              email: camilla.pelagalli@studenti.unitn.it
+              password: secretCamilla
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 11:34:30 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbb4955ce940e51-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"4c-bk62d4KWG4nloSGOmsLhgz12qbA"
+            Set-Cookie:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWxlc3NhbmRybyBQZWxhZ2FsbGkiLCJ1c2VySWQiOiI2NGU3NDA0NjlkMTI5OWQxMWRiZjBkNmIiLCJpYXQiOjE2OTI4NzY4NzAsImV4cCI6MTY5Mjk2MzI3MH0.Zf9m07ddqEolDCjfIwXR3VXYtXNnuS1gg36CoV-yClM.tFbsBoLVfpNR0WNY9rMf%2BBSkFmRVIMxwntUxoSY%2FU2w; Path=/; Expires=Fri, 25 Aug 2023 11:34:30 GMT; HttpOnly; Secure
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '98'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692877568'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    user:
+                      name: Alessandro Pelagalli
+                      userId: 64e740469d1299d11dbf0d6b
+              example:
+                user:
+                  name: Alessandro Pelagalli
+                  userId: 64e740469d1299d11dbf0d6b
+        '400':
+          description: Bad Request
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 13:22:43 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbbe7da9be20e27-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"1e-XUnnImVJ5eaXal0ONHYugHg6tSA"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '99'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692884198'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Email already exists
+              example:
+                msg: Email already exists
+      deprecated: false
+  /auth/login:
+    post:
+      tags:
+      - Authentication
+      summary: Login User
+      description: >-
+        This API allows you to log into the AACCAA app, once you have registered.
+
+
+        In order to do so, you need to provide _email_ and _password_ as strings in the request body, following the JSON format.
+
+
+        Omitting the above request fields will result in an error (400 Bad Request).
+
+
+        Mistyping the above request fields will result in an error (401 Unauthorized).
+
+
+        A successful response (201 created) provides the _name_ and _userId_ of the logged in user in JSON format.
+      operationId: LoginUser
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LoginUserRequest'
+              - example:
+                  email: camilla.pelagalli@studenti.unitn.it
+                  password: secretCamilla
+            example:
+              email: camilla.pelagalli@studenti.unitn.it
+              password: secretCamilla
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 11:37:54 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbb4e520b7b0e51-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"4c-bk62d4KWG4nloSGOmsLhgz12qbA"
+            Set-Cookie:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWxlc3NhbmRybyBQZWxhZ2FsbGkiLCJ1c2VySWQiOiI2NGU3NDA0NjlkMTI5OWQxMWRiZjBkNmIiLCJpYXQiOjE2OTI4NzcwNzQsImV4cCI6MTY5Mjk2MzQ3NH0.nyT06C7fGTHI-feZmEi3gOpgGtwERshA8xn0j0n1g4I.0zjjvirW%2FUxNpY17U%2BDxtkKJKTvFrqP96FWMiufwiHE; Path=/; Expires=Fri, 25 Aug 2023 11:37:54 GMT; HttpOnly; Secure
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '99'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692877568'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    user:
+                      name: Alessandro Pelagalli
+                      userId: 64e740469d1299d11dbf0d6b
+              example:
+                user:
+                  name: Alessandro Pelagalli
+                  userId: 64e740469d1299d11dbf0d6b
+        '401':
+          description: Unauthorized
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 13:28:31 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbbf05e3bcf0e27-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"1d-Q5P8lRTDDYKgGykHBLr+xy+H20w"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '99'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692884198'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Invalid Credentials
+              example:
+                msg: Invalid Credentials
+        '400':
+          description: Bad Request
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 13:29:20 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbbf18fedd10e27-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"2b-nrKmV32JT8PzWiAxaghaoCK/CjQ"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '98'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692884198'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Please provide email and password
+              example:
+                msg: Please provide email and password
+      deprecated: false
+  /auth/logout:
+    get:
+      tags:
+      - Authentication
+      summary: Logout User
+      description: >-
+        This API allows you to log out of the AACCAA app, once you have logged in or registered.
+
+
+        A successful logout results in a 200 OK Status Code.
+      operationId: LogoutUser
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 11:38:28 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbb4f2a78a50e51-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"1a-90AUEJ0De5yLoGdBGwn6vSEr+Q8"
+            Set-Cookie:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: token=logout; Path=/; Expires=Thu, 24 Aug 2023 11:38:28 GMT; HttpOnly
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '98'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692877568'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            Content-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: br
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: user logged out!
+              example:
+                msg: user logged out!
+      deprecated: false
+  /sentences:
+    post:
+      tags:
+      - Sentence
+      summary: Create Sentence
+      description: >-
+        This API allows you to create a simple subject - verb - object sentence, choosing between the available languages (currently: Italian, English and French).
+
+
+        In order to do so, you need to provide _language_ ( either _it_, _en_, or _fr_ as strings), _subject_, _verb_ and _object_ as strings, following JSON format.
+
+
+        Omitting one of the above request fields will result in an error (400 Bad Request).
+
+
+        Typing sentence part strings that do not match the chosen language, or a word for which a pictogram is not available in the arasaac database, will result in an error (404 Not Found).
+
+
+        Trying to create the same sentence twise will result in an error (409 Conflict).
+
+
+        Trying to create a sentence without being logged in/registered will result in an error (401 Unauthorized).
+
+
+        A successful response (201 created) provides the JSON _sentence_ object, made up of __id_, _structure_, _language_, _createdBy_, _createdAt_, _updatedAt_ fields.
+
+
+        - The _language_ field matches the _language_ field provided by the user.
+
+        - The _structure_ field is an array composed of three JSON _pictogram_ objects, each with _arasaacId_, _sentencePart_, _meaning_, _language_, _imageUrl_, _soundUrl_ and __id_ fields.
+            - The _sentencePart_ field matches the _subject, verb_, or _object field_ provided by the user, while the _meaning_ field matches the corresponding strings.
+            - The _imageUrl_ field contains the url of the pictogram png file as fetched from arasaac APIs.
+            - The _soundUrl_ field contains the url of the mp3 file associated to the pictogram gotten from Amazon Polly + Cloudinary SDKs.
+            - For the pictogram object, other than the database ID (__id_), also the arasaac ID (_arasaacId_) is provided for reuse purposes.
+        - The _createdBy_ field associates the sentence to the user that created it.
+      operationId: CreateSentence
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateSentenceRequest'
+              - example:
+                  language: en
+                  subject: I
+                  verb: love
+                  object: banana
+            example:
+              language: en
+              subject: I
+              verb: love
+              object: banana
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 11:39:07 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbb50019e340e51-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"424-tok6nXFNYCNbPTVdmmWDsLwtrLo"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '95'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692877568'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    sentence:
+                      structure:
+                      - arasaacId: 2617
+                        sentencePart: subject
+                        meaning: I
+                        language: en
+                        imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+                        _id: 64e741599d1299d11dbf0d71
+                        __v: 0
+                      - arasaacId: 2349
+                        sentencePart: verb
+                        meaning: eat
+                        language: en
+                        imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877146/Polly-SDE/file_vxdaij.mp3
+                        _id: 64e7415a9d1299d11dbf0d74
+                        __v: 0
+                      - arasaacId: 2530
+                        sentencePart: object
+                        meaning: banana
+                        language: en
+                        imageUrl: https://static.arasaac.org/pictograms/2530/2530_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877147/Polly-SDE/file_csayoz.mp3
+                        _id: 64e7415b9d1299d11dbf0d77
+                        __v: 0
+                      language: en
+                      createdBy: 64e740469d1299d11dbf0d6b
+                      _id: 64e7415b9d1299d11dbf0d7d
+                      createdAt: 2023-08-24T11:39:07.617Z
+                      updatedAt: 2023-08-24T11:39:07.617Z
+                      __v: 0
+              example:
+                sentence:
+                  structure:
+                  - arasaacId: 2617
+                    sentencePart: subject
+                    meaning: I
+                    language: en
+                    imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+                    _id: 64e741599d1299d11dbf0d71
+                    __v: 0
+                  - arasaacId: 2349
+                    sentencePart: verb
+                    meaning: eat
+                    language: en
+                    imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877146/Polly-SDE/file_vxdaij.mp3
+                    _id: 64e7415a9d1299d11dbf0d74
+                    __v: 0
+                  - arasaacId: 2530
+                    sentencePart: object
+                    meaning: banana
+                    language: en
+                    imageUrl: https://static.arasaac.org/pictograms/2530/2530_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877147/Polly-SDE/file_csayoz.mp3
+                    _id: 64e7415b9d1299d11dbf0d77
+                    __v: 0
+                  language: en
+                  createdBy: 64e740469d1299d11dbf0d6b
+                  _id: 64e7415b9d1299d11dbf0d7d
+                  createdAt: 2023-08-24T11:39:07.617Z
+                  updatedAt: 2023-08-24T11:39:07.617Z
+                  __v: 0
+        '400':
+          description: Bad Request
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 13:42:21 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbc049dcfab3760-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"3b-ZI6Apc5H4kNEikCeCqWR4T4yYww"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '99'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692885098'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Please provide language, subject, verb and object
+              example:
+                msg: Please provide language, subject, verb and object
+        '404':
+          description: Not Found
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 13:52:52 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbc14025aaa3745-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"30-GoiuK+4eDanE3lL6+jUvSdTpPRo"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '99'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692885998'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            Content-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: br
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: No pictogram associated with string io
+              example:
+                msg: No pictogram associated with string io
+        '409':
+          description: Conflict
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 14:03:31 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbc239e0b3683af-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"32-pzZkIEKFyk1hNTWpxtHSnT6bYmU"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '98'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692885998'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            text/html; charset=utf-8:
+              schema:
+                type: string
+                example: Duplicated sentence, please create a different one
+              example: Duplicated sentence, please create a different one
+        '401':
+          description: Unauthorized
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 15:37:30 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbcad4c88ec4c6d-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"20-0/Ux7jxrWO2B6s3ZrXXCbaq4480"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '98'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692892329'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Authentication Invalid
+              example:
+                msg: Authentication Invalid
+      deprecated: false
+    get:
+      tags:
+      - Sentence
+      summary: Get All Sentences
+      description: >-
+        This API allows you to retrieve all the sentences you have created in JSON list format, along with their count.
+
+
+        A successful response (200 OK) provides the list of sentences in JSON format.
+
+
+        A successful response (200 OK) is also returned when the list of sentences is empty, providing an empty list, along with a count of 0, following the JSON format.
+
+
+        Trying to get all sentences without being logged in/registered will result in an error (401 Unauthorized).
+      operationId: GetAllSentences
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 11:42:11 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbb54992e5d0e51-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"84d-6OZG52FrDAlWxMlQfZXW07TLhFE"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '92'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692877568'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            Content-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: br
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    sentences:
+                    - _id: 64e7415b9d1299d11dbf0d7d
+                      structure:
+                      - arasaacId: 2617
+                        sentencePart: subject
+                        meaning: I
+                        language: en
+                        imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+                        _id: 64e741599d1299d11dbf0d71
+                        __v: 0
+                      - arasaacId: 2349
+                        sentencePart: verb
+                        meaning: eat
+                        language: en
+                        imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877146/Polly-SDE/file_vxdaij.mp3
+                        _id: 64e7415a9d1299d11dbf0d74
+                        __v: 0
+                      - arasaacId: 2462
+                        sentencePart: object
+                        meaning: apple
+                        language: en
+                        imageUrl: https://static.arasaac.org/pictograms/2462/2462_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877215/Polly-SDE/file_jsloin.mp3
+                        _id: 64e7419f9d1299d11dbf0d8b
+                        __v: 0
+                      language: en
+                      createdBy: 64e740469d1299d11dbf0d6b
+                      createdAt: 2023-08-24T11:39:07.617Z
+                      updatedAt: 2023-08-24T11:40:15.928Z
+                      __v: 0
+                    - _id: 64e742049d1299d11dbf0db4
+                      structure:
+                      - arasaacId: 2617
+                        sentencePart: subject
+                        meaning: je
+                        language: fr
+                        imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877313/Polly-SDE/file_arehte.mp3
+                        _id: 64e742029d1299d11dbf0da5
+                        __v: 0
+                      - arasaacId: 2349
+                        sentencePart: verb
+                        meaning: manger
+                        language: fr
+                        imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877315/Polly-SDE/file_yec4s3.mp3
+                        _id: 64e742039d1299d11dbf0dab
+                        __v: 0
+                      - arasaacId: 2520
+                        sentencePart: object
+                        meaning: poisson
+                        language: fr
+                        imageUrl: https://static.arasaac.org/pictograms/2520/2520_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877315/Polly-SDE/file_dqorrd.mp3
+                        _id: 64e742049d1299d11dbf0dae
+                        __v: 0
+                      language: fr
+                      createdBy: 64e740469d1299d11dbf0d6b
+                      createdAt: 2023-08-24T11:41:56.533Z
+                      updatedAt: 2023-08-24T11:41:56.533Z
+                      __v: 0
+                    count: 2
+              example:
+                sentences:
+                - _id: 64e7415b9d1299d11dbf0d7d
+                  structure:
+                  - arasaacId: 2617
+                    sentencePart: subject
+                    meaning: I
+                    language: en
+                    imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+                    _id: 64e741599d1299d11dbf0d71
+                    __v: 0
+                  - arasaacId: 2349
+                    sentencePart: verb
+                    meaning: eat
+                    language: en
+                    imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877146/Polly-SDE/file_vxdaij.mp3
+                    _id: 64e7415a9d1299d11dbf0d74
+                    __v: 0
+                  - arasaacId: 2462
+                    sentencePart: object
+                    meaning: apple
+                    language: en
+                    imageUrl: https://static.arasaac.org/pictograms/2462/2462_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877215/Polly-SDE/file_jsloin.mp3
+                    _id: 64e7419f9d1299d11dbf0d8b
+                    __v: 0
+                  language: en
+                  createdBy: 64e740469d1299d11dbf0d6b
+                  createdAt: 2023-08-24T11:39:07.617Z
+                  updatedAt: 2023-08-24T11:40:15.928Z
+                  __v: 0
+                - _id: 64e742049d1299d11dbf0db4
+                  structure:
+                  - arasaacId: 2617
+                    sentencePart: subject
+                    meaning: je
+                    language: fr
+                    imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877313/Polly-SDE/file_arehte.mp3
+                    _id: 64e742029d1299d11dbf0da5
+                    __v: 0
+                  - arasaacId: 2349
+                    sentencePart: verb
+                    meaning: manger
+                    language: fr
+                    imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877315/Polly-SDE/file_yec4s3.mp3
+                    _id: 64e742039d1299d11dbf0dab
+                    __v: 0
+                  - arasaacId: 2520
+                    sentencePart: object
+                    meaning: poisson
+                    language: fr
+                    imageUrl: https://static.arasaac.org/pictograms/2520/2520_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877315/Polly-SDE/file_dqorrd.mp3
+                    _id: 64e742049d1299d11dbf0dae
+                    __v: 0
+                  language: fr
+                  createdBy: 64e740469d1299d11dbf0d6b
+                  createdAt: 2023-08-24T11:41:56.533Z
+                  updatedAt: 2023-08-24T11:41:56.533Z
+                  __v: 0
+                count: 2
+        '401':
+          description: Unauthorized
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 15:39:16 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbcafe0ab694c6d-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"20-0/Ux7jxrWO2B6s3ZrXXCbaq4480"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '99'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692892329'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Authentication Invalid
+              example:
+                msg: Authentication Invalid
+      deprecated: false
+  /sentences/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The sentence ID
+    get:
+      tags:
+      - Sentence
+      summary: Get Single Sentence
+      description: >-
+        This API allows you to retrieve a single sentence, by specifying its database ID, which is the string matching the __id_ field of the sentence JSON object.
+
+
+        A successful response (200 OK) provides the JSON sentence object.
+
+
+        Omitting characters of the __id_ will result in an error (404 Not Found).
+
+
+        Mistyping characters of the __id_ will result in an error (404 Not Found).
+
+
+        Trying to get a single sentence without being logged in/registered will result in an error (401 Unauthorized).
+      operationId: GetSingleSentence
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 11:41:02 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbb52e72abc0e51-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"423-RPg4wJKpGmHIvqCwDpEDOaPXtr0"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '93'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692877568'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            Content-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: br
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    sentence:
+                      _id: 64e7415b9d1299d11dbf0d7d
+                      structure:
+                      - arasaacId: 2617
+                        sentencePart: subject
+                        meaning: I
+                        language: en
+                        imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+                        _id: 64e741599d1299d11dbf0d71
+                        __v: 0
+                      - arasaacId: 2349
+                        sentencePart: verb
+                        meaning: eat
+                        language: en
+                        imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877146/Polly-SDE/file_vxdaij.mp3
+                        _id: 64e7415a9d1299d11dbf0d74
+                        __v: 0
+                      - arasaacId: 2462
+                        sentencePart: object
+                        meaning: apple
+                        language: en
+                        imageUrl: https://static.arasaac.org/pictograms/2462/2462_500.png
+                        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877215/Polly-SDE/file_jsloin.mp3
+                        _id: 64e7419f9d1299d11dbf0d8b
+                        __v: 0
+                      language: en
+                      createdBy: 64e740469d1299d11dbf0d6b
+                      createdAt: 2023-08-24T11:39:07.617Z
+                      updatedAt: 2023-08-24T11:40:15.928Z
+                      __v: 0
+              example:
+                sentence:
+                  _id: 64e7415b9d1299d11dbf0d7d
+                  structure:
+                  - arasaacId: 2617
+                    sentencePart: subject
+                    meaning: I
+                    language: en
+                    imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+                    _id: 64e741599d1299d11dbf0d71
+                    __v: 0
+                  - arasaacId: 2349
+                    sentencePart: verb
+                    meaning: eat
+                    language: en
+                    imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877146/Polly-SDE/file_vxdaij.mp3
+                    _id: 64e7415a9d1299d11dbf0d74
+                    __v: 0
+                  - arasaacId: 2462
+                    sentencePart: object
+                    meaning: apple
+                    language: en
+                    imageUrl: https://static.arasaac.org/pictograms/2462/2462_500.png
+                    soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877215/Polly-SDE/file_jsloin.mp3
+                    _id: 64e7419f9d1299d11dbf0d8b
+                    __v: 0
+                  language: en
+                  createdBy: 64e740469d1299d11dbf0d6b
+                  createdAt: 2023-08-24T11:39:07.617Z
+                  updatedAt: 2023-08-24T11:40:15.928Z
+                  __v: 0
+        '404':
+          description: Not Found
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 14:31:12 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbc4ab038e65242-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"39-arTujI7uiJ3iagik4/QAOonxu78"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '99'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692888370'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            Content-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: br
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: 'No item found with id : 64e7415b9d1299d11dbf0d7'
+              example:
+                msg: 'No item found with id : 64e7415b9d1299d11dbf0d7'
+        '401':
+          description: Unauthorized
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 15:41:29 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbcb32598f74c6d-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"20-0/Ux7jxrWO2B6s3ZrXXCbaq4480"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '97'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692892329'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Authentication Invalid
+              example:
+                msg: Authentication Invalid
+      deprecated: false
+    patch:
+      tags:
+      - Sentence
+      summary: Update Sentence
+      description: >-
+        This API allows you to update a sentence you have previously created, by specifying its database ID, which is the string matching the __id_ field of the sentence JSON object.
+
+
+        You can either update _subject_, _verb_, _object_ or all three of them, but you **cannot** change the language with which you originally typed the sentence parts.
+
+
+        In order to do so, you need to provide _subject_, _verb_ and _object_ (even if you do not want to change them all).
+
+
+        A successful response (200 OK) provides the updated sentence object in JSON format.
+
+
+        Omitting a sentence part will result in an error (400 Bad Request).
+
+
+        Changing the original language of any sentence part (unless it is a false friend) will result in an error (404 Not Found).
+
+
+        Trying to update a sentence without being logged in/registered will result in an error (401 Unauthorized).
+      operationId: UpdateSentence
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateSentenceRequest'
+              - example:
+                  subject: I
+                  verb: eat
+                  object: apple
+            example:
+              subject: I
+              verb: eat
+              object: apple
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 11:40:16 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbb51bde95b0e51-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"416-AHIozetuu8Rm/9XAnvLbXyQAikQ"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '96'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692877568'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            Content-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: br
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    _id: 64e7415b9d1299d11dbf0d7d
+                    structure:
+                    - arasaacId: 2617
+                      sentencePart: subject
+                      meaning: I
+                      language: en
+                      imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                      soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+                      _id: 64e741599d1299d11dbf0d71
+                      __v: 0
+                    - arasaacId: 2349
+                      sentencePart: verb
+                      meaning: eat
+                      language: en
+                      imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                      soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877146/Polly-SDE/file_vxdaij.mp3
+                      _id: 64e7415a9d1299d11dbf0d74
+                      __v: 0
+                    - arasaacId: 2462
+                      sentencePart: object
+                      meaning: apple
+                      language: en
+                      imageUrl: https://static.arasaac.org/pictograms/2462/2462_500.png
+                      soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877215/Polly-SDE/file_jsloin.mp3
+                      _id: 64e7419f9d1299d11dbf0d8b
+                      __v: 0
+                    language: en
+                    createdBy: 64e740469d1299d11dbf0d6b
+                    createdAt: 2023-08-24T11:39:07.617Z
+                    updatedAt: 2023-08-24T11:40:15.928Z
+                    __v: 0
+              example:
+                _id: 64e7415b9d1299d11dbf0d7d
+                structure:
+                - arasaacId: 2617
+                  sentencePart: subject
+                  meaning: I
+                  language: en
+                  imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+                  soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+                  _id: 64e741599d1299d11dbf0d71
+                  __v: 0
+                - arasaacId: 2349
+                  sentencePart: verb
+                  meaning: eat
+                  language: en
+                  imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+                  soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877146/Polly-SDE/file_vxdaij.mp3
+                  _id: 64e7415a9d1299d11dbf0d74
+                  __v: 0
+                - arasaacId: 2462
+                  sentencePart: object
+                  meaning: apple
+                  language: en
+                  imageUrl: https://static.arasaac.org/pictograms/2462/2462_500.png
+                  soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877215/Polly-SDE/file_jsloin.mp3
+                  _id: 64e7419f9d1299d11dbf0d8b
+                  __v: 0
+                language: en
+                createdBy: 64e740469d1299d11dbf0d6b
+                createdAt: 2023-08-24T11:39:07.617Z
+                updatedAt: 2023-08-24T11:40:15.928Z
+                __v: 0
+        '400':
+          description: Bad Request
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 14:39:30 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbc585968925242-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"3b-ZI6Apc5H4kNEikCeCqWR4T4yYww"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '97'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692888370'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Please provide language, subject, verb and object
+              example:
+                msg: Please provide language, subject, verb and object
+        '404':
+          description: Not Found
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 14:42:43 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbc5d0c29c35242-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"32-mq2i0QshmzEEDipOllDqcp2zeOI"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '99'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692888370'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            Content-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: br
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+
+                - example:
+                    msg: No pictogram associated with string mela
+              example:
+                msg: No pictogram associated with string mela
+        '401':
+          description: Unauthorized
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 15:42:06 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbcb40abc974c6d-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"20-0/Ux7jxrWO2B6s3ZrXXCbaq4480"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '95'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692892329'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Authentication Invalid
+              example:
+                msg: Authentication Invalid
+      deprecated: false
+    delete:
+      tags:
+      - Sentence
+      summary: Delete Sentence
+      description: >-
+        This API allows you to delete a sentence, by specifying its database ID, which is the string matching the __id_ field of the sentence JSON object.
+
+
+        A successful response (200 OK) reflects a successful deletion of the sentence.
+
+
+        Omitting characters of the __id_ will result in an error (404 Not Found).
+
+
+        Mistyping characters of the __id_ will result in an error (404 Not Found).
+
+
+        Trying to delete a sentence without being logged in/registered will result in an error (401 Unauthorized).
+      operationId: DeleteSentence
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 12:20:09 GMT
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbb8b52ed46baff-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '99'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692880506'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content: {}
+        '404':
+          description: Not Found
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 14:50:57 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbc6919c9fb5242-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"37-KWR0HJWtFKAIeKmN/z92Otp4Ctw"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '98'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692889270'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            Content-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: br
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: 'No sentence with id: 64e742049d1299d11dbf0dba'
+              example:
+                msg: 'No sentence with id: 64e742049d1299d11dbf0dba'
+        '401':
+          description: Unauthorized
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Thu, 24 Aug 2023 15:42:38 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            CF-Ray:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 7fbcb4cf3f134c6d-MXP
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: DYNAMIC
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '*'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"20-0/Ux7jxrWO2B6s3ZrXXCbaq4480"
+            Strict-Transport-Security:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: max-age=15552000; includeSubDomains
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Accept-Encoding
+            content-security-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            cross-origin-opener-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            cross-origin-resource-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: same-origin
+            origin-agent-cluster:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: ?1
+            referrer-policy:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: no-referrer
+            x-content-type-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: nosniff
+            x-dns-prefetch-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: off
+            x-download-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: noopen
+            x-frame-options:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: SAMEORIGIN
+            x-permitted-cross-domain-policies:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: none
+            x-ratelimit-limit:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '100'
+            x-ratelimit-remaining:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '96'
+            x-ratelimit-reset:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '1692892329'
+            x-render-origin-server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Render
+            x-xss-protection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '0'
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: cloudflare
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: h3=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - example:
+                    msg: Authentication Invalid
+              example:
+                msg: Authentication Invalid
+      deprecated: false
+components:
+  schemas:
+    RegisterUserRequest:
+      title: RegisterUserRequest
+      required:
+      - name
+      - email
+      - password
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        name: Camilla Pelagalli
+        email: camilla.pelagalli@studenti.unitn.it
+        password: secretCamilla
+    User:
+      title: User
+      required:
+      - name
+      - userId
+      type: object
+      properties:
+        name:
+          type: string
+        userId:
+          type: string
+      example:
+        name: Alessandro Pelagalli
+        userId: 64e740469d1299d11dbf0d6b
+    LoginUserRequest:
+      title: LoginUserRequest
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: camilla.pelagalli@studenti.unitn.it
+        password: secretCamilla
+    CreateSentenceRequest:
+      title: CreateSentenceRequest
+      required:
+      - language
+      - subject
+      - verb
+      - object
+      type: object
+      properties:
+        language:
+          type: string
+        subject:
+          type: string
+        verb:
+          type: string
+        object:
+          type: string
+      example:
+        language: en
+        subject: I
+        verb: love
+        object: banana
+    Sentence:
+      title: Sentence
+      required:
+      - structure
+      - language
+      - createdBy
+      - _id
+      - createdAt
+      - updatedAt
+      - __v
+      type: object
+      properties:
+        structure:
+          type: array
+          items:
+            $ref: '#/components/schemas/Structure'
+          description: ''
+        language:
+          type: string
+        createdBy:
+          type: string
+        _id:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        __v:
+          type: integer
+          format: int32
+      example:
+        structure:
+        - arasaacId: 2617
+          sentencePart: subject
+          meaning: I
+          language: en
+          imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+          soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+          _id: 64e741599d1299d11dbf0d71
+          __v: 0
+        - arasaacId: 2349
+          sentencePart: verb
+          meaning: eat
+          language: en
+          imageUrl: https://static.arasaac.org/pictograms/2349/2349_500.png
+          soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877146/Polly-SDE/file_vxdaij.mp3
+          _id: 64e7415a9d1299d11dbf0d74
+          __v: 0
+        - arasaacId: 2530
+          sentencePart: object
+          meaning: banana
+          language: en
+          imageUrl: https://static.arasaac.org/pictograms/2530/2530_500.png
+          soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877147/Polly-SDE/file_csayoz.mp3
+          _id: 64e7415b9d1299d11dbf0d77
+          __v: 0
+        language: en
+        createdBy: 64e740469d1299d11dbf0d6b
+        _id: 64e7415b9d1299d11dbf0d7d
+        createdAt: 2023-08-24T11:39:07.617Z
+        updatedAt: 2023-08-24T11:39:07.617Z
+        __v: 0
+    Structure:
+      title: Structure
+      required:
+      - arasaacId
+      - sentencePart
+      - meaning
+      - language
+      - imageUrl
+      - soundUrl
+      - _id
+      - __v
+      type: object
+      properties:
+        arasaacId:
+          type: integer
+          format: int32
+        sentencePart:
+          type: string
+        meaning:
+          type: string
+        language:
+          type: string
+        imageUrl:
+          type: string
+        soundUrl:
+          type: string
+        _id:
+          type: string
+        __v:
+          type: integer
+          format: int32
+      example:
+        arasaacId: 2617
+        sentencePart: subject
+        meaning: I
+        language: en
+        imageUrl: https://static.arasaac.org/pictograms/2617/2617_500.png
+        soundUrl: https://res.cloudinary.com/dpuaktdv6/video/upload/v1692877144/Polly-SDE/file_cgzvc4.mp3
+        _id: 64e741599d1299d11dbf0d71
+        __v: 0
+    UpdateSentenceRequest:
+      title: UpdateSentenceRequest
+      required:
+      - subject
+      - verb
+      - object
+      type: object
+      properties:
+        subject:
+          type: string
+        verb:
+          type: string
+        object:
+          type: string
+      example:
+        subject: I
+        verb: eat
+        object: apple
+tags:
+- name: Authentication
+  description: "The _Authentication_ folder gathers all the routes involved in the process of authentication to the application, and the corresponding REST APIs, which use HTTP-based API call methods.\n\n- [https://aaccaa-app.onrender.com/api/v1/auth/register](https://aaccaa-app.onrender.com/api/v1/auth/register) (register -> POST)\n- [https://aaccaa-app.onrender.com/api/v1/auth/login](https://aaccaa-app.onrender.com/api/v1/auth/login) (login -> POST)\n- [https://aaccaa-app.onrender.com/api/v1/auth/logout](https://aaccaa-app.onrender.com/api/v1/auth/logout) (logout -> GET)\n    \n\nThe JSON **user** object has the following structure:\n\n``` javascript\n\"user\": {\n       \"name\": String,\n       \"userId\": String\n}\n\n ```"
+- name: Sentence
+  description: "The _Sentence_ folder gathers all the routes corrensponding to the services offered by the application, and relative REST APIs, which use HTTP-based API call methods.\n\n- [https://aaccaa-app.onrender.com/api/v1/sentences](https://aaccaa-app.onrender.com/api/v1/sentences) (create a sentence -> POST)\n- [https://aaccaa-app.onrender.com/api/v1//sentences](https://aaccaa-app.onrender.com/api/v1//sentences) ( get all sentences -> GET)\n- [https://aaccaa-app.onrender.com/api/v1//sentences/:id](https://aaccaa-app.onrender.com/api/v1//sentences/:id) ( get a single sentence -> GET)\n- [https://aaccaa-app.onrender.com/api/v1/sentences/:id](https://aaccaa-app.onrender.com/api/v1/sentences/:id) ( update a sentence -> PATCH)\n- [https://aaccaa-app.onrender.com/api/v1/sentences/:id](https://aaccaa-app.onrender.com/api/v1/sentences/64e7415b9d1299d11dbf0d7d) ( delete a sentence -> DEL)\n    \n\nThe JSON **sentence** object has the following structure:\n\n``` javascript\n \"sentence\": {\n        \"_id\": String,\n        \"structure\": [\n            {\n                \"arasaacId\": Number,\n                \"sentencePart\": \"subject\",\n                \"meaning\": String,\n                \"language\": ['en', 'it', 'fr'],\n                \"imageUrl\": String,\n                \"soundUrl\": String,\n                \"_id\": String,\n                \"__v\": 0\n            },\n            {\n                \"arasaacId\": Number,\n                \"sentencePart\": \"verb\",\n                \"meaning\": String,\n                \"language\": ['en', 'it', 'fr'],\n                \"imageUrl\": String,\n                \"soundUrl\": String,\n                \"_id\": String,\n                \"__v\": 0\n            },\n            {\n                \"arasaacId\": Number,\n                \"sentencePart\": \"object\",\n                \"meaning\": String,\n                \"language\":['en', 'it', 'fr'],\n                \"imageUrl\": String,\n                \"soundUrl\": String,\n                \"_id\": String,\n                \"__v\": 0\n            }\n        ],\n        \"language\": ['en', 'it', 'fr'],\n        \"createdBy\": String,\n        \"createdAt\": String,\n        \"updatedAt\": String,\n        \"__v\": 0\n    }\n\n ```"
