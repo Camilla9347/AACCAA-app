@@ -86,7 +86,7 @@ app.use(cookieParser(process.env.JWT_SECRET)); // sign cookies so client cannot 
 app.get('/', (req,res) => {
     res.send('<h2>Welcome to AACCAA-app !</h2>' + 
     '<a href="https://documenter.getpostman.com/view/9638339/2s9Y5Wx3Ko"> This is the Postman AACCAA-app API documentation</a>' +
-    '<a href="/swagger-api-docs"> This is the swagger AACCAA-app API documentation</a>' +
+    '<p><a href="/swagger-api-docs"> This is the swagger AACCAA-app API documentation</a></p>' +
     '<h4> We note that Cookie authentication is currently not supported for "try it out" requests on the Swagger API documentation due to browser security restrictions. !</h4>'+
     '<a href="https://github.com/swagger-api/swagger-js/issues/1163">  Click here for more info </a>'
     )
