@@ -20,7 +20,7 @@ const express = require('express');
 const app = express();
 
 // rest of the packages
-//const morgan = require('morgan')
+const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
 const AWS = require('aws-sdk')
 
@@ -50,6 +50,9 @@ const {authenticateUser} = require('./middleware/authentication')
 // routers
 const authRouter = require('./routes/authRoutes')
 const sentenceRouter = require('./routes/sentenceRoutes')
+const cloudAdapterRouter = require('./routes/cloudAdapterRoutes')
+const imageAdapterRouter = require('./routes/imageAdapterRoutes')
+const soundAdapterRouter = require('./routes/soundAdapterRoutes')
 
 // middleware
 const NotFoundMiddleware = require('./middleware/not-found')
@@ -64,7 +67,7 @@ app.use(
 );
 
 // Morgan Package: know which routes you are hitting (development phase)
-//app.use(morgan('tiny'));
+app.use(morgan('tiny'));
 
 // setup express.json() middleware
 // access json data in req.body
@@ -97,6 +100,14 @@ app.use('/swagger-api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use('/api/v1/auth', authRouter)
 // all  sentence routes require user to be authenticated
 app.use('/api/v1/sentences',authenticateUser,sentenceRouter)
+// all cloud adapter routes require to be authenticated
+app.use('/api/v1/cloud-adapter', authenticateUser,cloudAdapterRouter);
+// all image adapter routes require to be authenticated
+app.use('/api/v1/image-adapter', authenticateUser,imageAdapterRouter);
+// all sound adapter routes require to be authenticated
+app.use('/api/v1/sound-adapter', authenticateUser,soundAdapterRouter);
+
+
 
 // 3 no routes found: end up here
 app.use(NotFoundMiddleware);

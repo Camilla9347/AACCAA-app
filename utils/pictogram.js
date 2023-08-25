@@ -21,6 +21,9 @@ const getFirstPictogram = async (language,string) => {
     }
     // get a list of best pictograms from the Image Adapter
     // by providing the necessary parameters
+
+    
+
     const data = await searchByMeaningAndLang(language,meaning)
     if(!data.length){
         throw new CustomError.NotFoundError(`No pictogram associated with string ${meaning}`)
@@ -193,10 +196,24 @@ const addNewPictogramPart = async (language, sentencePart, pictogramMeaning,pict
 // and returns the mp3 file url of the sound associated with the input pictogram
 const getAndStoreSound = async(pictogramMeaning,language,pictogramId) =>{
      //get the sound as an mp3 file from the Sound Adapter
+    
+    
+    
     const soundData = await getSoundFromPolly(pictogramMeaning,language);
     if(!Object.keys(soundData)){
         throw new CustomError.NotFoundError(`No audio associated with ID ${pictogramId}`)
     }
+
+    const getCloudObjectFromAdapter = `${process.env.JWT_SECRET}` +
+     '/api/v1/cloud-adapter?' +
+     'buffer=' + soundData.AudioStream;
+
+    request(getCloudObjectFromAdapter, function (error, response, body) {
+        console.log('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body);
+    });
+
     // get the uploaded mp3 file object from the Cloud Adapter
     const soundCloud = await uploadStream(soundData.AudioStream);
     if(!Object.keys(soundCloud)){

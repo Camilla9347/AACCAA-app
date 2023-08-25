@@ -1,3 +1,6 @@
+const getImage = async (req,res) => {
+}
+
 // This function takes as input the following arguments:
 // 1) language, forwarded by the Pictogram util (getFirstPictogram() function), either "en" or "it"
 // 2) meaning, forwarded by the Pictogram util (getFirstPictogram() function), such as "I", or "love", or "apple"
@@ -24,5 +27,6 @@ const searchById = async (pictogramId) => {
 
 module.exports = {
     searchByMeaningAndLang,
-    searchById
+    searchById,
+    getImage
 };
