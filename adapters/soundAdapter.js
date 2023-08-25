@@ -1,11 +1,16 @@
 const AWS = require('aws-sdk')
 
+
+const getSound = async (req,res) => {
+    const {user: {userId}, params: {id: sentenceId}} = req
+}
+
+
 // This function takes as input the following arguments:
 // 1) the pictogram meaning, such us "I", or "eat" or "bread", forwarded by the Pictogram util (getAndStoreSound())
 // 2) the language in which the meaning was type by the user,  forwarded by the Pictogram util (getAndStoreSound())
 
 // and returns the synthesized speech corresponding to the pictogram meaning in mp3 audio format
-
 const getSoundFromPolly = async(pictogramMeaning,language) => {
     const Polly = new AWS.Polly({
         region: AWS.config.region
@@ -71,4 +76,5 @@ const getSoundFromPolly = async(pictogramMeaning,language) => {
 
 module.exports = {
     getSoundFromPolly,
+    getSound
 }
