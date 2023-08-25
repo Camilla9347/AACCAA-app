@@ -1,9 +1,6 @@
 # AACCAA-app
 
 
-
-<p align="center"><img width="526" alt="Screenshot 2023-08-24 alle 20 43 11" src="https://github.com/Camilla9347/AACCAA-app/assets/50362663/df566c72-ef7a-4fe2-9d1b-71eae14fb061"></p>
-
 **The Process**
 
 The main process of the application, which coincides with the *Process centric* services layer consists in the user, mostly the care giver, *Registration/Login* and then the possibility to perform the following operations: 
